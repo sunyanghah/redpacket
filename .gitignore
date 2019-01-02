@@ -1,0 +1,18 @@
+*.class
+
+# Package Files #
+#*.jar
+*.war
+*.ear
+
+.classpath
+.project
+.settings/
+target/
+/.springBeans
+logs/
+temp/
+META-INF/
+.idea/
+*.iml
+*.log

@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: redpacket-countred
+  profiles:
+    active: dev
