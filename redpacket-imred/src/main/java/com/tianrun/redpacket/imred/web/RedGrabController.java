@@ -20,6 +20,13 @@ public class RedGrabController {
     @Autowired
     private RedGrabService redGrabService;
 
+    /**
+     * 抢红包
+     * @param redId
+     * @param userAccount
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/grab")
     public RP<OutGrabDto> grab(@RequestParam("redId")Long redId,@RequestParam("userAccount")String userAccount) throws Exception{
         return RP.buildSuccess(redGrabService.grab(redId,userAccount));
@@ -31,17 +38,19 @@ public class RedGrabController {
         return RP.buildSuccess(redGrabService.grab(redId,userAccount));
     }
 
-    @GetMapping("/just/test")
-    public RP justTest() throws Exception{
-        return RP.buildSuccess("");
-    }
-
     @GetMapping("/unpack/test")
     public RP testUnpack(@RequestParam("redId")Long redId) throws Exception{
         String userAccount = RandomStringUtils.randomAlphanumeric(5);
         return RP.buildSuccess(redGrabService.unpack(redId,userAccount));
     }
 
+    /**
+     * 拆红包
+     * @param redId
+     * @param userAccount
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/unpack")
     public RP<OutUnpackDto> unpack(@RequestParam("redId")Long redId, @RequestParam("userAccount")String userAccount) throws Exception{
         return RP.buildSuccess(redGrabService.unpack(redId,userAccount));
