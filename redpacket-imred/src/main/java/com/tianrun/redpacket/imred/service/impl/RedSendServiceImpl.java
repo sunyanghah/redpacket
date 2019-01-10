@@ -1,5 +1,6 @@
 package com.tianrun.redpacket.imred.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tianrun.redpacket.common.platform.IdGenerator;
 import com.tianrun.redpacket.imred.config.RedConstants;
 import com.tianrun.redpacket.imred.dto.InRedPackDto;
@@ -51,23 +52,24 @@ public class RedSendServiceImpl implements RedSendService {
         redOrder.setStatus("1");
         redOrderMapper.insert(redOrder);
 
-        // TODO 返回prePayId
-        outRedPackDto.setPrePayId("this is prePayId");
+        // TODO 返回redirectUrl
+        outRedPackDto.setPrePayId("this is redirectUrl ");
         return outRedPackDto;
     }
 
     @Override
-    public Long payFallback(InRedPayFallbackDto inRedPayFallbackDto) throws Exception {
-        if (inRedPayFallbackDto.isPayFlag()){
+    @Transactional(rollbackFor = Exception.class)
+    public void payFallback(InRedPayFallbackDto inRedPayFallbackDto) throws Exception {
+        if ("SUCCESS".equals(inRedPayFallbackDto.getStatus())){
 
             //根据orderNo查询红包信息
             RedOrder query = new RedOrder();
-            query.setOrderNo(inRedPayFallbackDto.getOrderNo());
-            RedOrder redOrder = redOrderMapper.selectOne(query);
+            query.setOrderNo(inRedPayFallbackDto.getRequestNo());
+            RedOrder redOrder = redOrderMapper.selectOne(new QueryWrapper<>(query));
 
             // 修改支付状态
             redOrder.setStatus("2");
-            redOrder.setPayWay(inRedPayFallbackDto.getPayWay());
+            redOrder.setPayWay(inRedPayFallbackDto.getPayTool());
             redOrderMapper.updateById(redOrder);
 
             //新增发送记录
@@ -83,21 +85,16 @@ public class RedSendServiceImpl implements RedSendService {
             Map<String,String> hbMap = new HashMap<>();
             hbMap.put(RedConstants.HB_SIZE,String.valueOf(redOrder.getRedNum()));
             hbMap.put(RedConstants.HB_MONEY,String.valueOf(redOrder.getRedMoney()));
-            // 红包类型，0 手气 1 普通
+            // 红包类型
             hbMap.put(RedConstants.HB_TYPE,redOrder.getRedType());
             hbMap.put(RedConstants.HB_DEADLINE,String.valueOf(System.currentTimeMillis()+RedConstants.HB_DEADLINE_MILLISECOND));
             hbMap.put(RedConstants.HB_MAX_PRICE,"0");
             hbMap.put(RedConstants.HB_MIN_PRICE,"0");
             redisTemplate.opsForHash().putAll(RedConstants.HB_INFO+redOrder.getId(),hbMap);
 
-            // TODO 这里往聊天发出红包
-
             // TODO 发送延时队列 红包过期后 退还给发红包者
 
             //
-
-            return redOrder.getId();
         }
-        return null;
     }
 }

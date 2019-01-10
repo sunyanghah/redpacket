@@ -45,9 +45,8 @@ public class RedSendController {
     @PostMapping("/payfallback")
     public RP payFallback(@RequestBody @Valid InRedPayFallbackDto inRedPayFallbackDto) throws Exception{
 
-        // 这里返回红包id是为了测试
-        Long redId = redSendService.payFallback(inRedPayFallbackDto);
-        return RP.buildSuccess("succcess",redId);
+        redSendService.payFallback(inRedPayFallbackDto);
+        return RP.buildSuccess("succcess");
         // TODO 修改支付状态，发放红包，设置redis红包信息
     }
 

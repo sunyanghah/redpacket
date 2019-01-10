@@ -1,11 +1,12 @@
 server:
   port: 8002
-
+  servlet:
+      context-path: /red/company
 
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://39.105.65.204:3306/redpacket?useSSL=false&&characterEncoding=utf-8
+    url: jdbc:mysql://39.105.65.204:3306/redpacket?useSSL=false&&characterEncoding=utf-8&&serverTimezone=Hongkong
     username: root
     password: 1qa@WS
     hikari:
@@ -22,10 +23,12 @@ spring:
       # 指定连接数据库的超时时间
       login-timeout: 5
   redis:
-    host:
+    cluster:
+      nodes: 39.96.46.94:6379,39.96.11.112:6379,39.105.65.204:6379
+      max-redirects: 3
     port: 6379
-    password:
-    database: 2
+    password: ido85_123
+#    database: 1
     queue.timeout: 30
     pool.test-on-borrow: true
     pool.test-while-idle: true

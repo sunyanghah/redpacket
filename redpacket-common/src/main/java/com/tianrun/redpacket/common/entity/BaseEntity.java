@@ -1,7 +1,7 @@
 package com.tianrun.redpacket.common.entity;
 
-import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -18,7 +18,7 @@ public class BaseEntity<T extends BaseEntity> extends Model<T> {
      * 创建人
      */
     @TableField("create_user")
-    private Integer createUser;
+    private String createUser;
 
     /**
      * 创建时间
@@ -30,7 +30,7 @@ public class BaseEntity<T extends BaseEntity> extends Model<T> {
      * 最后一次修改人
      */
     @TableField("update_user")
-    private Integer updateUser;
+    private String updateUser;
 
     /**
      * 最后一次修改时间
@@ -49,11 +49,11 @@ public class BaseEntity<T extends BaseEntity> extends Model<T> {
         return null;
     }
 
-    public void preUpdate(Integer updateUser)  throws Exception{
+    public void preUpdate(String updateUser)  throws Exception{
         this.updateTime = new Date();
         this.updateUser = updateUser;
     }
-    public void preInsert(Integer createUser) throws Exception{
+    public void preInsert(String createUser) throws Exception{
         Date date = new Date();
         this.updateTime = date;
         this.createTime = date;
@@ -61,7 +61,7 @@ public class BaseEntity<T extends BaseEntity> extends Model<T> {
         this.updateUser = createUser;
         this.delFlag = "0";
     }
-    public void preDelete(Integer deleteUser) throws Exception{
+    public void preDelete(String deleteUser) throws Exception{
         this.updateUser = deleteUser;
         this.delFlag = "1";
         this.updateTime = new Date();

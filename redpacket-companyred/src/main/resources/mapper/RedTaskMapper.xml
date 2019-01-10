@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianrun.redpacket.companyred.mapper.RedTaskMapper">
+    
+    <select id="queryTask" parameterType="InQueryTaskDto" resultType="OutQueryTaskDto">
+        SELECT
+            id,
+            task_code as taskCode,
+            task_name as taskName,
+            task_desc as taskDesc,
+            start_time as startTime,
+            deadline_time as deadlineTime,
+            secure_key as secureKey,
+            finished_code as finishedCode,
+            remarks as remarks,
+            access_flag as accessFlag,
+            useful_flag as usefulFlag
+        FROM
+          tb_red_task
+        WHERE
+          del_flag = '0'
+          <if test="dto.taskName != null and dto.taskName != ''">
+            AND
+              task_name like CONCAT('%',#{dto.taskName},'%')
+          </if>
+        ORDER BY
+          create_time DESC
+    </select>
+
+  <update id="deleteTask" parameterType="com.tianrun.redpacket.common.dto.InBatchIdDto">
+      UPDATE
+        tb_red_task
+      SET
+        del_flag = '1'
+      WHERE
+        id in (
+        <foreach collection="idList" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+  </update>
+
+</mapper>

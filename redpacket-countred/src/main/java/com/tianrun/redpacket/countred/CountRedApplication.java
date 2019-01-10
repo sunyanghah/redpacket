@@ -1,5 +1,6 @@
 package com.tianrun.redpacket.countred;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -8,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author dell
  */
 @SpringBootApplication(scanBasePackages = {"com.tianrun.redpacket"})
+@MapperScan(basePackages = {"com.tianrun.redpacket.countred.mapper","com.tianrun.redpacket.common.mapper"})
 public class CountRedApplication {
     public static void main(String[] args){
         SpringApplication.run(CountRedApplication.class,args);

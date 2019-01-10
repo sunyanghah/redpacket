@@ -25,5 +25,5 @@ public interface RedSendService {
      * @param inRedPayFallbackDto
      * @throws Exception
      */
-    Long payFallback(InRedPayFallbackDto inRedPayFallbackDto) throws Exception;
+    void payFallback(InRedPayFallbackDto inRedPayFallbackDto) throws Exception;
 }

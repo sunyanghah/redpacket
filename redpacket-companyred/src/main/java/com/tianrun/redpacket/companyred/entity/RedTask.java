@@ -1,9 +1,10 @@
 package com.tianrun.redpacket.companyred.entity;
 
-import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableName;
-import com.baomidou.mybatisplus.enums.IdType;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.tianrun.redpacket.common.entity.BaseEntity;
 import lombok.Data;
 
 import java.util.Date;
@@ -14,7 +15,7 @@ import java.util.Date;
  */
 @TableName("tb_red_task")
 @Data
-public class RedTask {
+public class RedTask extends BaseEntity{
 
     /**
      * 主键

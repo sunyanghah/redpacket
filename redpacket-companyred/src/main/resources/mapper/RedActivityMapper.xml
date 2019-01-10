@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianrun.redpacket.companyred.mapper.RedActivityMapper">
+
+
+    <update id="deleteActivity" parameterType="com.tianrun.redpacket.common.dto.InBatchIdDto">
+        UPDATE
+          tb_red_activity
+        SET
+          del_flag = '1'
+        WHERE
+          id in (
+           <foreach collection="idList" item="id" separator=",">
+               #{id}
+           </foreach>
+          )
+    </update>
+
+    <select id="queryActivity" parameterType="InQueryActivityDto" resultType="OutQueryActivityDto">
+        SELECT
+            id,
+            name,
+            activity_type as activityType,
+            red_type as redType,
+            red_amount as redAmount,
+            release_flag as releaseFlag,
+            start_time as startTime,
+            end_time as endTime
+        FROM
+            tb_red_activity
+        <where>
+            del_flag = '0'
+            <if test="dto.activityType != null and dto.activityType != ''">
+                AND activity_type = #{dto.activityType}
+            </if>
+
+            <if test="dto.redType != null and dto.redType != ''">
+                AND red_type = #{dto.redType}
+            </if>
+
+            <if test="dto.startRedAmount != null">
+                AND red_amount &gt;= #{dto.startRedAmount}
+            </if>
+
+            <if test="dto.endRedAmount != null">
+                AND red_amount &lt;= #{dto.endRedAmount}
+            </if>
+
+            <if test="dto.releaseFlag != null and dto.releaseFlag != ''">
+                AND release_flag = #{dto.releaseFlag}
+            </if>
+
+            <if test="dto.name != null and dto.name != ''">
+                AND name like CONCAT('%',#{dto.name},'%')
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+
+</mapper>

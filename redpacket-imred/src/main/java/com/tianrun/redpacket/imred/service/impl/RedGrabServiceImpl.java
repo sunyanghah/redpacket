@@ -1,5 +1,6 @@
 package com.tianrun.redpacket.imred.service.impl;
 
+import com.tianrun.redpacket.common.constant.DictConstant;
 import com.tianrun.redpacket.imred.config.RedConstants;
 import com.tianrun.redpacket.imred.dto.OutGrabDto;
 import com.tianrun.redpacket.imred.dto.OutUnpackDto;
@@ -120,7 +121,7 @@ public class RedGrabServiceImpl implements RedGrabService{
                     return outUnpackDto;
                 }
                 String type = list.get(1);
-                if ("luck".equals(type)) {
+                if (DictConstant.RED_TYPE_LUCK.equals(type)) {
 
                     Object object = redisTemplate.execute(defaultRedisScript,
                             Arrays.asList(RedConstants.HB_INFO + redId, RedConstants.HB_SIZE,
@@ -148,7 +149,7 @@ public class RedGrabServiceImpl implements RedGrabService{
                             return outUnpackDto;
                         }
                     }
-                } else if ("normal".equals(type)) {
+                } else if (DictConstant.RED_TYPE_NORMAL.equals(type)) {
                     // TODO 普通红包处理
                 }
             }

@@ -1,9 +1,10 @@
 package com.tianrun.redpacket.companyred.entity;
 
-import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableName;
-import com.baomidou.mybatisplus.enums.IdType;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.tianrun.redpacket.common.entity.BaseEntity;
 import lombok.Data;
 
 import java.util.Date;
@@ -14,7 +15,7 @@ import java.util.Date;
  */
 @Data
 @TableName("tb_red_activity")
-public class RedActivity {
+public class RedActivity extends BaseEntity {
 
     /**
      * 主键
@@ -77,12 +78,6 @@ public class RedActivity {
     private String clientName;
 
     /**
-     * 活动当前状态
-     */
-    @TableField("activity_status")
-    private String activityStatus;
-
-    /**
      * 红包类型(凭手气,普通)
      */
     @TableField("red_type")
@@ -135,10 +130,4 @@ public class RedActivity {
      */
     @TableField("salt")
     private String salt;
-
-    /**
-     * 支付方式
-     */
-    @TableField("pay_way")
-    private String payWay;
 }

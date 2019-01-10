@@ -14,8 +14,7 @@
 
     <properties>
         <fastjson.version>1.2.46</fastjson.version>
-        <mybatisplus-spring-boot-starter.version>1.0.5</mybatisplus-spring-boot-starter.version>
-        <mybatis-plus.version>2.1.9</mybatis-plus.version>
+        <mybatisplus-spring-boot-starter.version>3.0.7.1</mybatisplus-spring-boot-starter.version>
     </properties>
     <dependencies>
         <dependency>
@@ -34,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatisplus-spring-boot-starter</artifactId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>${mybatisplus-spring-boot-starter.version}</version>
             <exclusions>
                 <exclusion>
@@ -42,11 +41,6 @@
                     <artifactId>tomcat-jdbc</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus</artifactId>
-            <version>${mybatis-plus.version}</version>
         </dependency>
     </dependencies>
 
