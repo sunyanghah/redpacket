@@ -48,16 +48,10 @@ public class RedActivity extends BaseEntity {
     private Date endTime;
 
     /**
-     * 活动是否发布
+     * 活动状态
      */
-    @TableField("release_flag")
-    private String releaseFlag;
-
-    /**
-     * 活动发布时间
-     */
-    @TableField("release_time")
-    private Date releaseTime;
+    @TableField("activity_status")
+    private String activityStatus;
 
     /**
      * 活动类型(企业现金，通用场景，指定场景)

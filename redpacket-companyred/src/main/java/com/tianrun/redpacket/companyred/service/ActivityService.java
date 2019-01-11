@@ -53,4 +53,17 @@ public interface ActivityService extends IService<RedActivity> {
      * @throws Exception
      */
     void updateActivity(InAddActivityDto inAddActivityDto) throws Exception;
+
+    /**
+     * 激活红包活动
+     * @param inBatchIdDto
+     * @throws Exception
+     */
+    void activeActivity(InBatchIdDto<Long> inBatchIdDto) throws Exception;
+
+    /**
+     * 冻结红包活动
+     * @param inBatchIdDto
+     */
+    void freezeActivity(InBatchIdDto<Long> inBatchIdDto) throws Exception;
 }

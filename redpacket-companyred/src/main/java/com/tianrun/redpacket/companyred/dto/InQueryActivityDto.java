@@ -36,7 +36,7 @@ public class InQueryActivityDto extends InBasePageDto {
     private String name;
 
     /**
-     * 活动是否发布
+     * 活动状态
      */
-    private String releaseFlag;
+    private String activityStatus;
 }

@@ -43,7 +43,7 @@ public class ActivityController {
      * @throws Exception
      */
     @GetMapping("/{id}")
-    public RP getActivity(@PathVariable("id")Long id) throws Exception{
+    public RP getActivity(@PathVariable("id")Long id) throws Exception {
         OutGetActivityDto outGetActivityDto = activityService.getActivity(id);
         return RP.buildSuccess(outGetActivityDto);
     }
@@ -56,7 +56,7 @@ public class ActivityController {
      * @throws Exception
      */
     @PutMapping
-    public RP updateActivity(@RequestBody @Valid InAddActivityDto inAddActivityDto) throws Exception{
+    public RP updateActivity(@RequestBody @Valid InAddActivityDto inAddActivityDto) throws Exception {
         activityService.updateActivity(inAddActivityDto);
         return RP.buildSuccess("修改成功");
     }
@@ -68,7 +68,7 @@ public class ActivityController {
      * @throws Exception
      */
     @DeleteMapping
-    public RP deleteActivity(@RequestBody @Valid InBatchIdDto<Long> inBatchIdDto) throws Exception{
+    public RP deleteActivity(@RequestBody @Valid InBatchIdDto<Long> inBatchIdDto) throws Exception {
         activityService.deleteActivity(inBatchIdDto);
         return RP.buildSuccess("删除成功");
     }
@@ -80,9 +80,33 @@ public class ActivityController {
      * @throws Exception
      */
     @PostMapping("/listPage")
-    public RP queryActivity(@RequestBody @Valid InQueryActivityDto inQueryActivityDto) throws Exception{
+    public RP queryActivity(@RequestBody @Valid InQueryActivityDto inQueryActivityDto) throws Exception {
         Page page = activityService.queryActivity(inQueryActivityDto);
         return RP.buildSuccess(page);
+    }
+
+    /**
+     * 激活红包活动
+     * @param inBatchIdDto
+     * @return
+     * @throws Exception
+     */
+    @PutMapping("/active")
+    public RP releaseActivity(@RequestBody @Valid InBatchIdDto<Long> inBatchIdDto) throws Exception {
+        activityService.activeActivity(inBatchIdDto);
+        return RP.buildSuccess("激活成功");
+    }
+
+    /**
+     * 冻结红包活动
+     * @param inBatchIdDto
+     * @return
+     * @throws Exception
+     */
+    @PutMapping("/freeze")
+    public RP freezeActivity(@RequestBody @Valid InBatchIdDto<Long> inBatchIdDto) throws Exception {
+        activityService.freezeActivity(inBatchIdDto);
+        return RP.buildSuccess("冻结成功");
     }
 
 }

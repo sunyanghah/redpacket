@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,7 +63,7 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
         long redActivityId = idGenerator.next();
         redActivity.setId(redActivityId);
         redActivity.preInsert("123");
-        redActivity.setReleaseFlag(DictConstant.NO);
+        redActivity.setActivityStatus(DictConstant.ACTIVITY_STATUS_UNACTIVE);
         if (DictConstant.RED_TYPE_NORMAL.equals(redActivity.getRedType())){
             redActivity.setRedAmount(redActivity.getRedNum()*redActivity.getRedPrice());
         }
@@ -127,7 +128,7 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
         if (redActivity == null){
             throw new BusinessException("红包活动不存在");
         }
-        if (DictConstant.YES.equals(redActivity.getReleaseFlag())){
+        if (DictConstant.ACTIVITY_STATUS_ACTIVE.equals(redActivity.getActivityStatus())){
             throw new BusinessException("已发布的活动不允许修改");
         }
         redActivity = new RedActivity();
@@ -143,6 +144,16 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
         taskRelService.deleteTaskRelOfRed(redActivityId);
         // 前置任务
         addTaskRel(inAddActivityDto,redActivityId);
+    }
+
+    @Override
+    public void activeActivity(InBatchIdDto<Long> inBatchIdDto) throws Exception {
+        redActivityMapper.updateActivityStatus(inBatchIdDto,new Date(),DictConstant.ACTIVITY_STATUS_ACTIVE,"123");
+    }
+
+    @Override
+    public void freezeActivity(InBatchIdDto<Long> inBatchIdDto) throws Exception {
+        redActivityMapper.updateActivityStatus(inBatchIdDto,new Date(),DictConstant.ACTIVITY_STATUS_FREEZE,"123");
     }
 
     private void addAuth(InAddActivityDto inAddActivityDto,Long redActivityId) throws Exception{

@@ -9,6 +9,7 @@ import com.tianrun.redpacket.companyred.entity.RedActivity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,4 +31,12 @@ public interface RedActivityMapper extends BaseMapper<RedActivity> {
      * @return
      */
     List<OutQueryActivityDto> queryActivity(Page page, @Param("dto") InQueryActivityDto inQueryActivityDto);
+
+    /**
+     * 修改红包活动状态
+     * @param inBatchIdDto
+     * @param date
+     */
+    void updateActivityStatus(@Param("ids") InBatchIdDto<Long> inBatchIdDto, @Param("updateTime") Date date,
+                              @Param("activityStatus") String activityStatus,@Param("updateUser") String userAccount);
 }

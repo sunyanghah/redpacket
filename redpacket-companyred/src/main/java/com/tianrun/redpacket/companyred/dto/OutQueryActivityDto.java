@@ -38,10 +38,10 @@ public class OutQueryActivityDto {
     private Integer redAmount;
 
     /**
-     * 活动是否发布
+     * 活动状态
      */
-    @DictValueHandle(dictType = DictConstant.YES_NO)
-    private String releaseFlag;
+    @DictValueHandle(dictType = DictConstant.ACTIVITY_STATUS)
+    private String activityStatus;
 
     /**
      * 活动开始时间

@@ -23,7 +23,7 @@
             activity_type as activityType,
             red_type as redType,
             red_amount as redAmount,
-            release_flag as releaseFlag,
+            activity_status as activityStatus,
             start_time as startTime,
             end_time as endTime
         FROM
@@ -46,8 +46,8 @@
                 AND red_amount &lt;= #{dto.endRedAmount}
             </if>
 
-            <if test="dto.releaseFlag != null and dto.releaseFlag != ''">
-                AND release_flag = #{dto.releaseFlag}
+            <if test="dto.activityStatus != null and dto.activityStatus != ''">
+                AND activity_status = #{dto.activityStatus}
             </if>
 
             <if test="dto.name != null and dto.name != ''">
@@ -57,5 +57,19 @@
         ORDER BY create_time DESC
     </select>
 
+    <update id="updateActivityStatus">
+    UPDATE
+        tb_red_activity
+    SET
+        activity_status = #{activityStatus},
+        update_time = #{updateTime},
+        update_user = #{updateUser}
+    WHERE
+    id in (
+    <foreach collection="ids" item="id" separator=",">
+        #{id}
+    </foreach>
+    )
+    </update>
 
 </mapper>

@@ -10,6 +10,7 @@ public class DictConstant {
     public static final String YES_NO = "yes_no";
     public static final String RED_TYPE = "red_type";
     public static final String ACTIVITY_TYPE = "activity_type";
+    public static final String ACTIVITY_STATUS = "activity_status";
 
 
     public static final String YES = "yes";
@@ -20,5 +21,8 @@ public class DictConstant {
     public static final String ACTIVITY_TYPE_COMMON = "common";
     public static final String ACTIVITY_TYPE_SPECIFY = "specify";
 
+    public static final String ACTIVITY_STATUS_ACTIVE = "active";
+    public static final String ACTIVITY_STATUS_UNACTIVE = "unactive";
+    public static final String ACTIVITY_STATUS_FREEZE = "freeze";
 
 }

@@ -40,15 +40,11 @@ public class OutGetActivityDto {
     private Date endTime;
 
     /**
-     * 活动是否发布
+     * 活动状态
      */
-    @DictValueHandle(dictType = DictConstant.YES_NO)
-    private String releaseFlag;
+    @DictValueHandle(dictType = DictConstant.ACTIVITY_STATUS)
+    private String activityStatus;
 
-    /**
-     * 活动发布时间
-     */
-    private Date releaseTime;
 
     /**
      * 活动类型(企业现金，通用场景，指定场景)
