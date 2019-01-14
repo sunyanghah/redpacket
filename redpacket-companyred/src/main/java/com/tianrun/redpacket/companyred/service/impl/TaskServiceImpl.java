@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tianrun.redpacket.common.dto.InBatchIdDto;
-import com.tianrun.redpacket.common.platform.DictHandle;
+import com.tianrun.redpacket.common.dict.DictHandle;
 import com.tianrun.redpacket.common.platform.IdGenerator;
 import com.tianrun.redpacket.companyred.dto.*;
 import com.tianrun.redpacket.companyred.entity.RedTask;

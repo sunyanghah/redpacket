@@ -22,14 +22,20 @@ public class RedOrder {
     /**
      * 红包订单号
      */
-    @TableField("order_no")
-    private String orderNo;
+    @TableField("red_no")
+    private String redNo;
 
     /**
      * 红包总金额
      */
     @TableField("red_money")
     private Integer redMoney;
+
+    /**
+     * 红包单个金额，普通红包下设置
+     */
+    @TableField("red_price")
+    private Integer redPrice;
 
     /**
      * 订单创建人账号

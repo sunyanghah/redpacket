@@ -20,10 +20,10 @@ public class RedImDistribute {
     private Long id;
 
     /**
-     * 红包订单号
+     * 红包编号
      */
-    @TableField("order_no")
-    private String orderNo;
+    @TableField("red_no")
+    private String redNo;
 
     /**
      * 发送红包人的账号
@@ -48,6 +48,12 @@ public class RedImDistribute {
      */
     @TableField("red_money")
     private Integer redMoney;
+
+    /**
+     * 红包单个金额，普通红包时设置
+     */
+    @TableField("red_price")
+    private Integer redPrice;
 
     /**
      * 红包派发时间

@@ -1,4 +1,4 @@
-package com.tianrun.redpacket.common.platform;
+package com.tianrun.redpacket.common.dict;
 
 import java.lang.annotation.*;
 

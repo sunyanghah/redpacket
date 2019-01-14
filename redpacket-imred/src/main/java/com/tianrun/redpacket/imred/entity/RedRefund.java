@@ -20,10 +20,10 @@ public class RedRefund {
     private Long id;
 
     /**
-     * IM红包id
+     * IM红包编号
      */
-    @TableField("red_id")
-    private Long redId;
+    @TableField("red_no")
+    private String redNo;
 
     /**
      * 退款方式

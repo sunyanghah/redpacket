@@ -24,6 +24,12 @@ public class RedActivity extends BaseEntity {
     private Long id;
 
     /**
+     * 红包编号
+     */
+    @TableField("red_no")
+    private String redNo;
+
+    /**
      * 红包活动名称
      */
     @TableField("name")

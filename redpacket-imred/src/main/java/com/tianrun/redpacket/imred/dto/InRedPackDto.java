@@ -15,20 +15,18 @@ public class InRedPackDto {
     /**
      * 红包总金额
      */
-    @NotNull
     private Integer redMoney;
+
+    /**
+     * 红包单个金额，普通红包时传
+     */
+    private Integer redPrice;
 
     /**
      * 发红包的人的账号
      */
     @NotBlank
     private String userAccount;
-
-    /**
-     * 发红包的人的昵称
-     */
-    @NotBlank
-    private String userName;
 
     /**
      * 红包类型 luck 拼手气  normal 普通

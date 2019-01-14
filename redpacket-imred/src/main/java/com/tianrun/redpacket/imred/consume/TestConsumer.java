@@ -1,6 +1,8 @@
 package com.tianrun.redpacket.imred.consume;
 
+import com.alibaba.fastjson.JSON;
 import com.tianrun.redpacket.imred.config.rocketmq.DefaultConsumerConfigure;
+import com.tianrun.redpacket.imred.entity.RedGrab;
 import lombok.extern.log4j.Log4j2;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.exception.MQClientException;
@@ -14,6 +16,7 @@ import java.util.List;
 
 /**
  * Created by dell on 2019/1/4.
+ * @author dell
  */
 @Log4j2
 @Configuration
@@ -34,11 +37,12 @@ public class TestConsumer extends DefaultConsumerConfigure implements Applicatio
         for(MessageExt msg : msgs) {
             try {
                 String msgStr = new String(msg.getBody(), "utf-8");
+//                JSON.parseObject(msgStr, RedGrab.class);
                 log.info("--topic--"+msg.getTopic());
                 log.info("--tags--"+msg.getTags());
                 log.info("----------------"+msgStr);
-            } catch (UnsupportedEncodingException e) {
-                log.error("body转字符串解析失败");
+            } catch (Exception e) {
+                log.error("消息处理失败");
             }
         }
         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;

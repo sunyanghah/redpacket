@@ -25,22 +25,18 @@ public abstract class DefaultConsumerConfigure {
     DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("framework-rocketmq");
 
 
-    // 开启消费者监听服务
+    /**
+     * 开启消费者监听服务
+     * @throws MQClientException
+     */
     public void listener() throws MQClientException {
         log.info("开启消费者-------------------");
-        log.info(consumerConfig.toString());
 
         consumer.setNamesrvAddr(consumerConfig.getNamesrvAddr());
 
-        consumer.subscribe("testTopic", "redGrabToDb||redMoneyToUser");
-        consumer.subscribe("myTopic","testTag");
+        consumer.subscribe("redTopic", "*");
         // 开启内部类实现监听
-        consumer.registerMessageListener(new MessageListenerConcurrently() {
-            @Override
-            public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
-                return DefaultConsumerConfigure.this.dealBody(msgs);
-            }
-        });
+        consumer.registerMessageListener((MessageListenerConcurrently) (msgs, context) -> DefaultConsumerConfigure.this.dealBody(msgs));
 
         consumer.start();
 
@@ -48,7 +44,11 @@ public abstract class DefaultConsumerConfigure {
 
     }
 
-    // 处理body的业务
+    /**
+     * 处理body的业务
+     * @param msgs
+     * @return
+     */
     public abstract ConsumeConcurrentlyStatus dealBody(List<MessageExt> msgs);
 
 }

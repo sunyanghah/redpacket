@@ -1,6 +1,5 @@
-package com.tianrun.redpacket.common.platform;
+package com.tianrun.redpacket.common.dict;
 
-import com.tianrun.redpacket.common.mapper.RedDictMapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

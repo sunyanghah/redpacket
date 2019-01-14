@@ -1,7 +1,7 @@
 package com.tianrun.redpacket.companyred.dto;
 
 import com.tianrun.redpacket.common.constant.DictConstant;
-import com.tianrun.redpacket.common.platform.DictValueHandle;
+import com.tianrun.redpacket.common.dict.DictValueHandle;
 import lombok.Data;
 
 import java.util.Date;

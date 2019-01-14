@@ -46,7 +46,7 @@ public class RedSendController {
     public RP payFallback(@RequestBody @Valid InRedPayFallbackDto inRedPayFallbackDto) throws Exception{
 
         redSendService.payFallback(inRedPayFallbackDto);
-        return RP.buildSuccess("succcess");
+        return RP.buildSuccess("success");
         // TODO 修改支付状态，发放红包，设置redis红包信息
     }
 

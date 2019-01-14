@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tianrun.redpacket.common.constant.DictConstant;
 import com.tianrun.redpacket.common.dto.InBatchIdDto;
 import com.tianrun.redpacket.common.exception.BusinessException;
-import com.tianrun.redpacket.common.platform.DictHandle;
+import com.tianrun.redpacket.common.dict.DictHandle;
 import com.tianrun.redpacket.common.platform.IdGenerator;
 import com.tianrun.redpacket.companyred.dto.*;
 import com.tianrun.redpacket.companyred.entity.RedActivity;
@@ -48,6 +48,37 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
     @Autowired
     private DictHandle dictHandle;
 
+
+    /**
+     * 检查设置的红包金额是否合理
+     * 单位 分。
+     * @param redAmount
+     * @param redNum
+     * @param maxPrice
+     * @return
+     * @throws Exception
+     */
+    private void checkPrice(Integer redAmount,Integer redNum,Integer maxPrice) throws Exception {
+
+        if (redAmount == null || redAmount == 0){
+            throw new BusinessException("红包总金额不能为0");
+        }
+        if (redNum == null || redNum == 0){
+            throw new BusinessException("红包领取人数不能为0");
+        }
+
+        Integer averPrice = redAmount/redNum;
+        if (averPrice < 1){
+            throw new BusinessException("请确保至少每人领到0.01元");
+        }
+
+        if (maxPrice != null && maxPrice != 0) {
+            if (averPrice >= maxPrice){
+                throw new BusinessException("最大领取金额必须大于平均领取金额");
+            }
+        }
+    }
+
     /**
      * 新增企业红包活动
      * @param inAddActivityDto
@@ -62,11 +93,16 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
         BeanUtils.copyProperties(inAddActivityDto,redActivity);
         long redActivityId = idGenerator.next();
         redActivity.setId(redActivityId);
+        redActivity.setRedNo(String.valueOf(idGenerator.next()));
         redActivity.preInsert("123");
         redActivity.setActivityStatus(DictConstant.ACTIVITY_STATUS_UNACTIVE);
         if (DictConstant.RED_TYPE_NORMAL.equals(redActivity.getRedType())){
+            if (null == redActivity.getRedPrice() || redActivity.getRedPrice() == 0){
+                throw new BusinessException("普通红包的单个红包金额不能为0");
+            }
             redActivity.setRedAmount(redActivity.getRedNum()*redActivity.getRedPrice());
         }
+        checkPrice(inAddActivityDto.getRedAmount(),inAddActivityDto.getRedNum(),inAddActivityDto.getMaxPrice());
         redActivityMapper.insert(redActivity);
 
         // 领取人员范围
@@ -134,7 +170,13 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
         redActivity = new RedActivity();
         BeanUtils.copyProperties(inAddActivityDto,redActivity);
         redActivity.preUpdate("123");
-
+        if (DictConstant.RED_TYPE_NORMAL.equals(redActivity.getRedType())){
+            if (null == redActivity.getRedPrice() || redActivity.getRedPrice() == 0){
+                throw new BusinessException("普通红包的单个红包金额不能为0");
+            }
+            redActivity.setRedAmount(redActivity.getRedNum()*redActivity.getRedPrice());
+        }
+        checkPrice(inAddActivityDto.getRedAmount(),inAddActivityDto.getRedNum(),inAddActivityDto.getMaxPrice());
         redActivityMapper.updateById(redActivity);
 
         authorizationService.deleteAuthOfRed(redActivityId);
@@ -149,11 +191,13 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
     @Override
     public void activeActivity(InBatchIdDto<Long> inBatchIdDto) throws Exception {
         redActivityMapper.updateActivityStatus(inBatchIdDto,new Date(),DictConstant.ACTIVITY_STATUS_ACTIVE,"123");
+        // TODO 往redis添加红包信息 红包类型
     }
 
     @Override
     public void freezeActivity(InBatchIdDto<Long> inBatchIdDto) throws Exception {
         redActivityMapper.updateActivityStatus(inBatchIdDto,new Date(),DictConstant.ACTIVITY_STATUS_FREEZE,"123");
+        // TODO 修改redis红包信息
     }
 
     private void addAuth(InAddActivityDto inAddActivityDto,Long redActivityId) throws Exception{
@@ -171,7 +215,6 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
                 authList.add(redAuthorization);
             }
             authorizationService.saveBatch(authList);
-//            authorizationService.insertBatch(authList);
         }
     }
 
@@ -187,7 +230,6 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
                 redTaskRelList.add(redTaskRel);
             }
             taskRelService.saveBatch(redTaskRelList);
-//            taskRelService.insertBatch(redTaskRelList);
         }
     }
 }

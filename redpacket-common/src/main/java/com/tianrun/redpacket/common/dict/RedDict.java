@@ -1,4 +1,4 @@
-package com.tianrun.redpacket.common.entity;
+package com.tianrun.redpacket.common.dict;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

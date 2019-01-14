@@ -1,7 +1,8 @@
-package com.tianrun.redpacket.common.mapper;
+package com.tianrun.redpacket.common.dict;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.tianrun.redpacket.common.entity.RedDict;
+import com.tianrun.redpacket.common.dict.OutDictDto;
+import com.tianrun.redpacket.common.dict.RedDict;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -41,4 +42,8 @@ public interface RedDictMapper extends BaseMapper<RedDict> {
             "#{code}</foreach>) " +
             "</script> ")
     List<Map<String,String>> getValueByTypesAndCodes(@Param("types")List<String> types,@Param("codes")List<String> codes);
+
+
+    @Select("select * from tb_red_dict where dict_type = #{type}")
+    List<OutDictDto> getDictByType(@Param("type") String type);
 }

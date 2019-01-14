@@ -9,6 +9,6 @@ import lombok.Data;
 @Data
 public class OutRedPackDto {
 
-    private String prePayId;
+    private String waitFor;
 
 }

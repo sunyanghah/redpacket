@@ -16,14 +16,17 @@ import java.util.Date;
 @TableName("tb_red_grab")
 public class RedGrab {
 
+    /**
+     * 主键
+     */
     @TableId(type = IdType.INPUT)
     private Long id;
 
     /**
-     * 红包id
+     * 红包编号
      */
-    @TableField("red_id")
-    private Long redId;
+    @TableField("red_no")
+    private String redNo;
 
     /**
      * 用户账号

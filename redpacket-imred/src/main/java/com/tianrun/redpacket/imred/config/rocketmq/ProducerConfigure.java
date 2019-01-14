@@ -24,9 +24,7 @@ public class ProducerConfigure {
      * @throws MQClientException
      */
     @Bean
-//    @ConditionalOnProperty(prefix = "rocketmq.producer")
     public DefaultMQProducer defaultProducer() throws MQClientException {
-        log.info(producerConfigure.toString());
         log.info("defaultProducer 正在创建---------------------------------------");
         DefaultMQProducer producer = new DefaultMQProducer(producerConfigure.getGroupName());
         producer.setNamesrvAddr(producerConfigure.getNamesrvAddr());

@@ -22,38 +22,38 @@ public class RedGrabController {
 
     /**
      * 抢红包
-     * @param redId
+     * @param redNo
      * @param userAccount
      * @return
      * @throws Exception
      */
     @GetMapping("/grab")
-    public RP<OutGrabDto> grab(@RequestParam("redId")Long redId,@RequestParam("userAccount")String userAccount) throws Exception{
-        return RP.buildSuccess(redGrabService.grab(redId,userAccount));
+    public RP<OutGrabDto> grab(@RequestParam("redNo")String redNo,@RequestParam("userAccount")String userAccount) throws Exception{
+        return RP.buildSuccess(redGrabService.grab(redNo,userAccount));
     }
 
     @GetMapping("/grab/test")
-    public RP testGrab(@RequestParam("redId")Long redId) throws Exception{
+    public RP testGrab(@RequestParam("redId")String redNo) throws Exception{
         String userAccount = RandomStringUtils.randomAlphanumeric(5);
-        return RP.buildSuccess(redGrabService.grab(redId,userAccount));
+        return RP.buildSuccess(redGrabService.grab(redNo,userAccount));
     }
 
     @GetMapping("/unpack/test")
-    public RP testUnpack(@RequestParam("redId")Long redId) throws Exception{
+    public RP testUnpack(@RequestParam("redNo")String redNo) throws Exception{
         String userAccount = RandomStringUtils.randomAlphanumeric(5);
-        return RP.buildSuccess(redGrabService.unpack(redId,userAccount));
+        return RP.buildSuccess(redGrabService.unpack(redNo,userAccount));
     }
 
     /**
      * 拆红包
-     * @param redId
+     * @param redNo
      * @param userAccount
      * @return
      * @throws Exception
      */
     @GetMapping("/unpack")
-    public RP<OutUnpackDto> unpack(@RequestParam("redId")Long redId, @RequestParam("userAccount")String userAccount) throws Exception{
-        return RP.buildSuccess(redGrabService.unpack(redId,userAccount));
+    public RP<OutUnpackDto> unpack(@RequestParam("redNo")String redNo, @RequestParam("userAccount")String userAccount) throws Exception{
+        return RP.buildSuccess(redGrabService.unpack(redNo,userAccount));
     }
 
 
