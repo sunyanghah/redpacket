@@ -58,6 +58,13 @@ public class RedGrabController {
     }
 
 
+    /**
+     * 抢红包记录查询
+     * @param redNo
+     * @param userAccount
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/info")
     public RP<OutRedUnpackInfoDto> getUnpackInfo(@RequestParam("redNo")String redNo, @RequestParam("userAccount")String userAccount)  throws Exception {
         OutRedUnpackInfoDto outRedUnpackInfoDto = redGrabService.getUnpackInfo(redNo,userAccount);

@@ -247,7 +247,7 @@ public class RedGrabServiceImpl implements RedGrabService{
                 redUnpackInfoDto.setUnpackMoney(redGrab.getMoney());
                 redUnpackInfoDto.setUnpackTime(redGrab.getGrabTime());
                 // TODO 运气王
-                redUnpackInfoDto.setBestLuck(false);
+                redUnpackInfoDto.setBestLuck(DictConstant.YES.equals(redGrab.getBestLuck())?true:false);
                 if (userAccount.equals(redGrab.getUserAccount())){
                     outRedUnpackInfoDto.setMyUnpack(redGrab.getMoney());
                 }
