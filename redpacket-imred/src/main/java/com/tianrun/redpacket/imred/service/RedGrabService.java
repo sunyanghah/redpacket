@@ -1,6 +1,7 @@
 package com.tianrun.redpacket.imred.service;
 
 import com.tianrun.redpacket.imred.dto.OutGrabDto;
+import com.tianrun.redpacket.imred.dto.OutRedUnpackInfoDto;
 import com.tianrun.redpacket.imred.dto.OutUnpackDto;
 import com.tianrun.redpacket.imred.entity.RedGrab;
 
@@ -28,5 +29,12 @@ public interface RedGrabService {
      */
     OutUnpackDto unpack(String redNo, String userAccount) throws Exception;
 
-    void addGrabNote(RedGrab redGrab) throws Exception;
+    /**
+     * 获取红包被抢信息
+     * @param redNo
+     * @param userAccount
+     * @return
+     * @throws Exception
+     */
+    OutRedUnpackInfoDto getUnpackInfo(String redNo, String userAccount) throws Exception;
 }

@@ -36,6 +36,8 @@ public interface RedActivityMapper extends BaseMapper<RedActivity> {
      * 修改红包活动状态
      * @param inBatchIdDto
      * @param date
+     * @param activityStatus
+     * @param userAccount
      */
     void updateActivityStatus(@Param("ids") InBatchIdDto<Long> inBatchIdDto, @Param("updateTime") Date date,
                               @Param("activityStatus") String activityStatus,@Param("updateUser") String userAccount);

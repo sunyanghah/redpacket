@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Created by dell on 2019/1/4.
+ * @author dell
  */
 @Configuration
 @Log4j2
@@ -25,7 +26,10 @@ public abstract class DefaultConsumerConfigure {
     DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("framework-rocketmq");
 
 
-    // 开启消费者监听服务
+    /**
+     * 开启消费者监听服务
+     *
+     * */
     public void listener() throws MQClientException {
         log.info("开启消费者-------------------");
         log.info(consumerConfig.toString());
@@ -48,7 +52,11 @@ public abstract class DefaultConsumerConfigure {
 
     }
 
-    // 处理body的业务
+    /**
+     * 处理body的业务
+     * @param msgs
+     * @return
+     */
     public abstract ConsumeConcurrentlyStatus dealBody(List<MessageExt> msgs);
 
 }

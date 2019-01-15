@@ -14,7 +14,7 @@ public class OutRedUnpackInfoDto {
     /**
      * 红包id
      */
-    private Long redId;
+    private String redNo;
 
     /**
      * 红包类型 luck 拼手气  normal 普通

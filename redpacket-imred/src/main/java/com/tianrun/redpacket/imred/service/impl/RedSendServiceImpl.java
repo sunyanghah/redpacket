@@ -2,9 +2,10 @@ package com.tianrun.redpacket.imred.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tianrun.redpacket.common.constant.DictConstant;
+import com.tianrun.redpacket.common.constant.RedConstants;
+import com.tianrun.redpacket.common.constant.RocketMqConstants;
 import com.tianrun.redpacket.common.exception.BusinessException;
 import com.tianrun.redpacket.common.platform.IdGenerator;
-import com.tianrun.redpacket.common.constant.RedConstants;
 import com.tianrun.redpacket.imred.dto.InRedPackDto;
 import com.tianrun.redpacket.imred.dto.InRedPayFallbackDto;
 import com.tianrun.redpacket.imred.dto.OutRedPackDto;
@@ -13,6 +14,10 @@ import com.tianrun.redpacket.imred.entity.RedOrder;
 import com.tianrun.redpacket.imred.mapper.RedImDistributeMapper;
 import com.tianrun.redpacket.imred.mapper.RedOrderMapper;
 import com.tianrun.redpacket.imred.service.RedSendService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.common.message.Message;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -28,6 +33,7 @@ import java.util.Map;
  * @author dell
  */
 @Service
+@Slf4j
 public class RedSendServiceImpl implements RedSendService {
 
     @Autowired
@@ -38,6 +44,8 @@ public class RedSendServiceImpl implements RedSendService {
     private RedisTemplate redisTemplate;
     @Autowired
     private RedImDistributeMapper redImDistributeMapper;
+    @Autowired
+    private DefaultMQProducer producer;
 
     /**
      * 检查设置的红包金额是否合理
@@ -138,8 +146,27 @@ public class RedSendServiceImpl implements RedSendService {
             redisTemplate.opsForHash().putAll(RedConstants.HB_INFO+redOrder.getRedNo(),hbMap);
 
             // TODO 发送延时队列 红包过期后 退还给发红包者
-
+            sendMqForRedExpire(redOrder.getRedNo());
             // TODO 给智慧门户推送消息 发送红包
+        }
+    }
+
+    private void sendMqForRedExpire(String redNo) {
+        try {
+            Message message = new Message(RocketMqConstants.RED_TOPIC, RocketMqConstants.TAGS_EXPIRE,
+                    RocketMqConstants.TAGS_EXPIRE, redNo.getBytes());
+            message.setDelayTimeLevel(RocketMqConstants.RED_EXPIRE_DELAY_LEVEL);
+            SendResult sendResult = producer.send(message);
+            if (!RocketMqConstants.SEND_OK.equals(sendResult.getSendStatus().toString())) {
+                throw new BusinessException(sendResult.getSendStatus().toString());
+            }
+        }catch (Exception e){
+            Map<String, Object> map = new HashMap<>();
+            map.put("topic", RocketMqConstants.RED_TOPIC);
+            map.put("tags", RocketMqConstants.TAGS_EXPIRE);
+            map.put("data", redNo);
+            redisTemplate.opsForList().leftPush(RocketMqConstants.ERROR_SEND, map);
+            log.error("红包过期消息发送失败 红包编号 {},异常信息{}", redNo,e);
         }
     }
 }

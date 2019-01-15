@@ -1,5 +1,6 @@
 package com.tianrun.redpacket.imred.config.rocketmq;
 
+import com.tianrun.redpacket.common.constant.RocketMqConstants;
 import lombok.extern.log4j.Log4j2;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
@@ -14,6 +15,7 @@ import java.util.List;
 
 /**
  * Created by dell on 2019/1/4.
+ * @author dell
  */
 @Configuration
 @Log4j2
@@ -34,7 +36,7 @@ public abstract class DefaultConsumerConfigure {
 
         consumer.setNamesrvAddr(consumerConfig.getNamesrvAddr());
 
-        consumer.subscribe("redTopic", "*");
+        consumer.subscribe(RocketMqConstants.RED_TOPIC, "*");
         // 开启内部类实现监听
         consumer.registerMessageListener((MessageListenerConcurrently) (msgs, context) -> DefaultConsumerConfigure.this.dealBody(msgs));
 

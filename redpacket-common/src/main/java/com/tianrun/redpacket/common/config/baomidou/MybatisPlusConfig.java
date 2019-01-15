@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * Created by dell on 2019/1/10.
+ * @author dell
  */
 @EnableTransactionManagement
 @Configuration

@@ -64,6 +64,7 @@ public interface ActivityService extends IService<RedActivity> {
     /**
      * 冻结红包活动
      * @param inBatchIdDto
+     * @throws Exception
      */
     void freezeActivity(InBatchIdDto<Long> inBatchIdDto) throws Exception;
 }

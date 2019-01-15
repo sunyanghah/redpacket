@@ -2,6 +2,7 @@ package com.tianrun.redpacket.imred.web;
 
 import com.tianrun.redpacket.common.platform.RP;
 import com.tianrun.redpacket.imred.dto.OutGrabDto;
+import com.tianrun.redpacket.imred.dto.OutRedUnpackInfoDto;
 import com.tianrun.redpacket.imred.dto.OutUnpackDto;
 import com.tianrun.redpacket.imred.service.RedGrabService;
 import org.apache.commons.lang.RandomStringUtils;
@@ -56,5 +57,11 @@ public class RedGrabController {
         return RP.buildSuccess(redGrabService.unpack(redNo,userAccount));
     }
 
+
+    @GetMapping("/info")
+    public RP<OutRedUnpackInfoDto> getUnpackInfo(@RequestParam("redNo")String redNo, @RequestParam("userAccount")String userAccount)  throws Exception {
+        OutRedUnpackInfoDto outRedUnpackInfoDto = redGrabService.getUnpackInfo(redNo,userAccount);
+        return RP.buildSuccess(outRedUnpackInfoDto);
+    }
 
 }
