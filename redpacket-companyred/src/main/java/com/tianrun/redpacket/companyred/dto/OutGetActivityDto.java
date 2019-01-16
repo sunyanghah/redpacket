@@ -53,14 +53,9 @@ public class OutGetActivityDto {
     private String activityType;
 
     /**
-     * 企业Code(指定场景时指定企业)
+     * 指定的场景(指定场景活动时)
      */
-    private String clientCode;
-
-    /**
-     * 企业名称(指定场景时指定)
-     */
-    private String clientName;
+    private List<ActivityPlaceDto> placeList;
 
     /**
      * 红包类型(凭手气,普通)

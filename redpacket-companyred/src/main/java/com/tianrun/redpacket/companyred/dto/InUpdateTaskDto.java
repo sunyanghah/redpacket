@@ -1,5 +1,6 @@
 package com.tianrun.redpacket.companyred.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -25,9 +26,11 @@ public class InUpdateTaskDto {
     private String taskDesc;
 
     @NotNull
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
 
     @NotNull
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date deadlineTime;
 
     @NotBlank

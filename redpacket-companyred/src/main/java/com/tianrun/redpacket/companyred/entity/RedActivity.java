@@ -66,18 +66,6 @@ public class RedActivity extends BaseEntity {
     private String activityType;
 
     /**
-     * 企业Code(指定场景时指定企业)
-     */
-    @TableField("client_code")
-    private String clientCode;
-
-    /**
-     * 企业名称(指定场景时指定)
-     */
-    @TableField("client_name")
-    private String clientName;
-
-    /**
      * 红包类型(凭手气,普通)
      */
     @TableField("red_type")

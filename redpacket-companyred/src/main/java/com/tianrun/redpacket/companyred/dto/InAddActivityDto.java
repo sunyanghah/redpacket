@@ -2,9 +2,9 @@ package com.tianrun.redpacket.companyred.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -24,14 +24,9 @@ public class InAddActivityDto {
     private String activityType;
 
     /**
-     * 企业Code(指定场景时指定企业)
+     * 指定的场景(指定场景活动时)
      */
-    private String clientCode;
-
-    /**
-     * 企业名称(指定场景时指定)
-     */
-    private String clientName;
+    private List<ActivityPlaceDto> placeList;
 
     /**
      * 活动名称
@@ -48,22 +43,26 @@ public class InAddActivityDto {
      *  开始时间
      */
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @NotNull
     private Date startTime;
 
     /**
      * 结束时间
      */
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @NotNull
     private Date endTime;
 
     /**
      * 红包类型(凭手气,普通)
      */
+    @NotNull
     private String redType;
 
     /**
      * 红包个数
      */
+    @NotNull
     private Integer redNum;
 
     /**

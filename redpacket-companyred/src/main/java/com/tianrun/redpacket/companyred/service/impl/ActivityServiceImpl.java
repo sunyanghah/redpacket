@@ -10,9 +10,11 @@ import com.tianrun.redpacket.common.dict.DictHandle;
 import com.tianrun.redpacket.common.platform.IdGenerator;
 import com.tianrun.redpacket.companyred.dto.*;
 import com.tianrun.redpacket.companyred.entity.RedActivity;
+import com.tianrun.redpacket.companyred.entity.RedActivityPlace;
 import com.tianrun.redpacket.companyred.entity.RedAuthorization;
 import com.tianrun.redpacket.companyred.entity.RedTaskRel;
 import com.tianrun.redpacket.companyred.mapper.RedActivityMapper;
+import com.tianrun.redpacket.companyred.service.ActivityPlaceService;
 import com.tianrun.redpacket.companyred.service.ActivityService;
 import com.tianrun.redpacket.companyred.service.AuthorizationService;
 import com.tianrun.redpacket.companyred.service.TaskRelService;
@@ -48,6 +50,8 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
     @Autowired
     private DictHandle dictHandle;
 
+    @Autowired
+    private ActivityPlaceService activityPlaceService;
 
     /**
      * 检查设置的红包金额是否合理
@@ -111,6 +115,8 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
         // 前置任务
         addTaskRel(inAddActivityDto,redActivityId);
 
+        // 场景
+        addPlace(inAddActivityDto.getPlaceList(),redActivityId);
     }
 
     @Override
@@ -135,6 +141,9 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
                 redAuthDto.setUserAccounts(userAccounts);
                 outGetActivityDto.setUserAuth(redAuthDto);
             }
+
+            List<ActivityPlaceDto> placeDtoList = activityPlaceService.getPlaceListByRedId(id);
+            outGetActivityDto.setPlaceList(placeDtoList);
         }
         dictHandle.handleDict(outGetActivityDto);
         return outGetActivityDto;
@@ -179,24 +188,28 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
         checkPrice(inAddActivityDto.getRedAmount(),inAddActivityDto.getRedNum(),inAddActivityDto.getMaxPrice());
         redActivityMapper.updateById(redActivity);
 
-        authorizationService.deleteAuthOfRed(redActivityId);
         // 领取人员范围
+        authorizationService.deleteAuthOfRed(redActivityId);
         addAuth(inAddActivityDto,redActivityId);
 
-        taskRelService.deleteTaskRelOfRed(redActivityId);
         // 前置任务
+        taskRelService.deleteTaskRelOfRed(redActivityId);
         addTaskRel(inAddActivityDto,redActivityId);
+
+        // 场景
+        activityPlaceService.deletePlaceOfRed(redActivityId);
+        addPlace(inAddActivityDto.getPlaceList(),redActivityId);
     }
 
     @Override
     public void activeActivity(InBatchIdDto<Long> inBatchIdDto) throws Exception {
-        redActivityMapper.updateActivityStatus(inBatchIdDto,new Date(),DictConstant.ACTIVITY_STATUS_ACTIVE,"123");
+        redActivityMapper.updateActivityStatus(inBatchIdDto.getIdList(),new Date(),DictConstant.ACTIVITY_STATUS_ACTIVE,"123");
         // TODO 往redis添加红包信息 红包类型
     }
 
     @Override
     public void freezeActivity(InBatchIdDto<Long> inBatchIdDto) throws Exception {
-        redActivityMapper.updateActivityStatus(inBatchIdDto,new Date(),DictConstant.ACTIVITY_STATUS_FREEZE,"123");
+        redActivityMapper.updateActivityStatus(inBatchIdDto.getIdList(),new Date(),DictConstant.ACTIVITY_STATUS_FREEZE,"123");
         // TODO 修改redis红包信息
     }
 
@@ -230,6 +243,22 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
                 redTaskRelList.add(redTaskRel);
             }
             taskRelService.saveBatch(redTaskRelList);
+        }
+    }
+
+    private void addPlace(List<ActivityPlaceDto> placeList,Long redActivityId) throws Exception {
+        if (placeList != null && placeList.size() > 0){
+            List<RedActivityPlace> redActivityPlaceList = new ArrayList<>();
+            RedActivityPlace redActivityPlace;
+            for (ActivityPlaceDto activityPlaceDto : placeList){
+                redActivityPlace = new RedActivityPlace();
+                redActivityPlace.setId(idGenerator.next());
+                redActivityPlace.setActivityId(redActivityId);
+                redActivityPlace.setPlaceCode(activityPlaceDto.getPlaceCode());
+                redActivityPlace.setPlaceName(activityPlaceDto.getPlaceName());
+                redActivityPlaceList.add(redActivityPlace);
+            }
+            activityPlaceService.saveBatch(redActivityPlaceList);
         }
     }
 }
