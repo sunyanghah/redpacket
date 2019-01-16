@@ -6,6 +6,8 @@ import com.tianrun.redpacket.imred.dto.InRedPayFallbackDto;
 import com.tianrun.redpacket.imred.dto.OutRedPackDto;
 import com.tianrun.redpacket.imred.service.RedSendService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +24,8 @@ public class RedSendController {
     @Autowired
     private RedSendService redSendService;
 
-
+    @Autowired
+    private RedisTemplate redisTemplate;
     /**
      * 包红包
      * @param inRedPackDto
@@ -49,4 +52,10 @@ public class RedSendController {
         // TODO 修改支付状态，发放红包，设置redis红包信息
     }
 
+    @GetMapping("/redisTest")
+    public RP redisTest() throws Exception{
+        redisTemplate.opsForValue().set("sytest","dsfsdfsdfsdf");
+        Object obj = redisTemplate.opsForValue().get("sytest");
+        return RP.buildSuccess(obj);
+    }
 }

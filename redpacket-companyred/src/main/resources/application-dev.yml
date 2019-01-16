@@ -13,7 +13,7 @@ spring:
       # 一个连接的生命时长（毫秒），超时而且没被使用则被释放（retired），缺省:30分钟，建议设置比数据库超时时长少30秒以上
       maxLifetime: 1765000
       # 连接池中允许的最大连接数。缺省值：10；推荐的公式：((core_count * 2) + effective_spindle_count)
-      maximumPoolSize: 15
+      maximumPoolSize: 30
       # 一个连接idle状态的最大时长（毫秒），超时则被释放（retired），缺省:10分钟
       idle-timeout: 600000
       # 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 缺省:30秒
@@ -23,15 +23,10 @@ spring:
       # 指定连接数据库的超时时间
       login-timeout: 5
   redis:
-    cluster:
-      nodes: 39.96.46.94:6379,39.96.11.112:6379,39.105.65.204:6379
-      max-redirects: 3
-    port: 6379
     password: ido85_123
-#    database: 1
+    cluster.nodes: 39.96.46.94:6379,39.96.11.112:6379,39.105.65.204:6379,39.96.46.94:6380,39.96.11.112:6380,39.105.65.204:6380
+    cluster.max-redirects: 6
     queue.timeout: 30
-    pool.test-on-borrow: true
-    pool.test-while-idle: true
 
 rocketmq:
   # 生产者配置

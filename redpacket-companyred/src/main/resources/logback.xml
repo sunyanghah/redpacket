@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+	<!--<include resource="org/springframework/boot/logging/logback/base.xml" />-->
+	<!-- <property resource="logback.properties" /> -->
+	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径 -->
+	<property name="LOG_HOME" value="./logs/redpacket-companyred" />
+	<property name="APP_NAME" value="redpacket-companyred" />
+	<!-- 控制台输出 -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<!--格式化输出,%d:日期;%thread:线程名;%-5level：级别,从左显示5个字符宽度;%msg:日志消息;%n:换行符 -->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<!-- 按照每天生成日志文件 -->
+	<appender name="FILE"
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<!--格式化输出,%d:日期;%thread:线程名;%-5level：级别,从左显示5个字符宽度;%msg:日志消息;%n:换行符-->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+		</encoder>
+		<!--日志文件最大的大小-->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${LOG_HOME}/${APP_NAME}.%d{yyyy-MM-dd}.log.%i
+			</fileNamePattern>
+			<MaxHistory>10</MaxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+					class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+
+	<!-- 定制 -->
+	<logger name="org.springframework.web" level="INFO" />
+	<logger name="org.springframework.boot" level="INFO" />
+	<logger name="org.eclipse.persistence" level="INFO" />
+	<logger name="org.springframework.data" level="INFO" />
+
+	<!-- show parameters for hibernate sql 专为 Hibernate 定制 -->
+	<!--<logger name="org.hibernate.type.descriptor.sql.BasicBinder"-->
+			<!--level="INFO" />-->
+	<!--<logger name="org.hibernate.type.descriptor.sql.BasicExtractor"-->
+			<!--level="INFO" />-->
+	<!--<logger name="org.hibernate.SQL" level="INFO" />-->
+	<!--<logger name="org.hibernate.engine.QueryParameters" level="INFO" />-->
+	<!--<logger name="org.hibernate.engine.query.HQLQueryPlan" level="INFO" />-->
+
+	<!-- 日志输出级别 -->
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</root>
+	<!-- 日志异步到数据库
+    <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+        <connectionSource
+            class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+            <dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
+                <driverClass>com.mysql.jdbc.Driver</driverClass>
+                <url>jdbc:mysql://127.0.0.1:3306/databaseName</url>
+                <user>root</user>
+                <password>root</password>
+            </dataSource>
+        </connectionSource>
+    </appender> -->
+</configuration>
