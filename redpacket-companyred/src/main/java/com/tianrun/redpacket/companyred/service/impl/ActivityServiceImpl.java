@@ -1,5 +1,6 @@
 package com.tianrun.redpacket.companyred.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -10,15 +11,9 @@ import com.tianrun.redpacket.common.exception.BusinessException;
 import com.tianrun.redpacket.common.dict.DictHandle;
 import com.tianrun.redpacket.common.platform.IdGenerator;
 import com.tianrun.redpacket.companyred.dto.*;
-import com.tianrun.redpacket.companyred.entity.RedActivity;
-import com.tianrun.redpacket.companyred.entity.RedActivityPlace;
-import com.tianrun.redpacket.companyred.entity.RedAuthorization;
-import com.tianrun.redpacket.companyred.entity.RedTaskRel;
+import com.tianrun.redpacket.companyred.entity.*;
 import com.tianrun.redpacket.companyred.mapper.RedActivityMapper;
-import com.tianrun.redpacket.companyred.service.ActivityPlaceService;
-import com.tianrun.redpacket.companyred.service.ActivityService;
-import com.tianrun.redpacket.companyred.service.AuthorizationService;
-import com.tianrun.redpacket.companyred.service.TaskRelService;
+import com.tianrun.redpacket.companyred.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -55,6 +50,9 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private TaskResultService taskResultService;
 
     /**
      * 检查设置的红包金额是否合理
@@ -109,7 +107,7 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
             }
             redActivity.setRedAmount(redActivity.getRedNum()*redActivity.getRedPrice());
         }
-        checkPrice(inAddActivityDto.getRedAmount(),inAddActivityDto.getRedNum(),inAddActivityDto.getMaxPrice());
+        checkPrice(redActivity.getRedAmount(),redActivity.getRedNum(),redActivity.getMaxPrice());
         redActivityMapper.insert(redActivity);
 
         // 领取人员范围
@@ -188,7 +186,7 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
             }
             redActivity.setRedAmount(redActivity.getRedNum()*redActivity.getRedPrice());
         }
-        checkPrice(inAddActivityDto.getRedAmount(),inAddActivityDto.getRedNum(),inAddActivityDto.getMaxPrice());
+        checkPrice(redActivity.getRedAmount(),redActivity.getRedNum(),redActivity.getMaxPrice());
         redActivityMapper.updateById(redActivity);
 
         // 领取人员范围
@@ -206,18 +204,24 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void activeActivity(InBatchIdDto<Long> inBatchIdDto) throws Exception {
-        redActivityMapper.updateActivityStatus(inBatchIdDto.getIdList(),new Date(),DictConstant.ACTIVITY_STATUS_ACTIVE,"123");
-        List<RedActivity> activityList = redActivityMapper.selectBatchIds(inBatchIdDto.getIdList());
-        if (activityList != null && activityList.size() > 0){
-            for (RedActivity redActivity : activityList){
-                if (DictConstant.ACTIVITY_STATUS_UNACTIVE.equals(redActivity.getActivityStatus())){
+    public void activeActivity(Long redId) throws Exception {
+        // 获取活动集合
+        RedActivity activity = redActivityMapper.selectById(redId);
+        if (activity != null){
+            // 如果之前是未激活
+            if (DictConstant.ACTIVITY_STATUS_UNACTIVE.equals(activity.getActivityStatus())){
 
-                }else if (DictConstant.ACTIVITY_STATUS_FREEZE.equals(redActivity.getActivityStatus())){
+                addHbInfoCache(activity);
+                addAuthCache(activity);
+                addTaskCache(activity);
 
-                }
+            // 如果之前是冻结
+            }else if (DictConstant.ACTIVITY_STATUS_FREEZE.equals(activity.getActivityStatus())){
+
             }
         }
+        // 修改活动状态
+        redActivityMapper.updateActivityStatus(Arrays.asList(redId),new Date(),DictConstant.ACTIVITY_STATUS_ACTIVE,"123");
         // TODO 往redis添加红包信息 红包类型
     }
 
@@ -245,7 +249,34 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
         redisTemplate.opsForHash().putAll(RedConstants.HB_INFO+redActivity.getRedNo(),hbMap);
     }
 
-//    private void addAuth
+    /**
+     * 领取人员范围放入缓存
+     * @param redActivity
+     * @throws Exception
+     */
+    private void addAuthCache(RedActivity redActivity) throws Exception {
+        List<RedAuthorization> redAuthorizations = authorizationService.getAuthListByRedId(redActivity.getId());
+        if (redAuthorizations != null && redAuthorizations.size() > 0){
+            redAuthorizations.forEach(redAuthorization ->
+                    redisTemplate.opsForList().leftPush(RedConstants.HB_AUTH+redActivity.getRedNo(), JSON.toJSONString(redAuthorization)));
+        }
+    }
+
+    /**
+     * 完成任务的人放入缓存
+     * @param redActivity
+     * @throws Exception
+     */
+    private void addTaskCache(RedActivity redActivity) throws Exception {
+        List<RedTask> redTaskList = taskRelService.getTaskInfoByRedId(redActivity.getId());
+        if (redTaskList != null && redTaskList.size() > 0){
+            List<String> accountList = taskResultService.getAccountByFinishAllTask(redTaskList,redTaskList.size());
+            if (accountList != null && accountList.size() > 0){
+                accountList.forEach(account ->
+                        redisTemplate.opsForList().leftPush(RedConstants.HB_TASK+redActivity.getRedNo(),account));
+            }
+        }
+    }
 
 
     @Override

@@ -87,13 +87,13 @@ public class ActivityController {
 
     /**
      * 激活红包活动
-     * @param inBatchIdDto
+     * @param redId
      * @return
      * @throws Exception
      */
-    @PutMapping("/active")
-    public RP releaseActivity(@RequestBody @Valid InBatchIdDto<Long> inBatchIdDto) throws Exception {
-        activityService.activeActivity(inBatchIdDto);
+    @PutMapping("/active/{redId}")
+    public RP releaseActivity(@PathVariable("redId")Long redId) throws Exception {
+        activityService.activeActivity(redId);
         return RP.buildSuccess("激活成功");
     }
 

@@ -1,6 +1,7 @@
 package com.tianrun.redpacket.companyred.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.tianrun.redpacket.companyred.entity.RedTask;
 import com.tianrun.redpacket.companyred.entity.RedTaskRel;
 
 import java.util.List;
@@ -25,4 +26,12 @@ public interface TaskRelService extends IService<RedTaskRel> {
      * @throws Exception
      */
     void deleteTaskRelOfRed(Long redId) throws Exception;
+
+    /**
+     * 根据红包id查询任务信息
+     * @param redId
+     * @return
+     * @throws Exception
+     */
+    List<RedTask> getTaskInfoByRedId(Long redId) throws Exception;
 }

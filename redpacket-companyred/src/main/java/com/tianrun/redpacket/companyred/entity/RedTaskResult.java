@@ -21,12 +21,6 @@ public class RedTaskResult {
     private Long id;
 
     /**
-     * 主键id
-     */
-    @TableField("red_id")
-    private Long redId;
-
-    /**
      * 任务id
      */
     @TableField("task_id")

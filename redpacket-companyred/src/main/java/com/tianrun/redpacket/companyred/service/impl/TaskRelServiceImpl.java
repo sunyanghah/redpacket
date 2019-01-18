@@ -1,6 +1,7 @@
 package com.tianrun.redpacket.companyred.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.tianrun.redpacket.companyred.entity.RedTask;
 import com.tianrun.redpacket.companyred.entity.RedTaskRel;
 import com.tianrun.redpacket.companyred.mapper.RedTaskRelMapper;
 import com.tianrun.redpacket.companyred.service.TaskRelService;
@@ -27,5 +28,10 @@ public class TaskRelServiceImpl extends ServiceImpl<RedTaskRelMapper,RedTaskRel>
     @Override
     public void deleteTaskRelOfRed(Long redId) throws Exception {
         redTaskRelMapper.deleteTaskRelOfRed(redId);
+    }
+
+    @Override
+    public List<RedTask> getTaskInfoByRedId(Long redId) throws Exception {
+        return redTaskRelMapper.getTaskInfoByRedId(redId);
     }
 }
