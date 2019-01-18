@@ -23,8 +23,6 @@ public abstract class DefaultConsumerConfigure {
     @Autowired
     private ConsumerConfig consumerConfig;
 
-    DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("framework-rocketmq");
-
 
     /**
      * 开启消费者监听服务
@@ -32,8 +30,7 @@ public abstract class DefaultConsumerConfigure {
      * */
     public void listener() throws MQClientException {
         log.info("开启消费者-------------------");
-        log.info(consumerConfig.toString());
-
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(consumerConfig.getGroupName());
         consumer.setNamesrvAddr(consumerConfig.getNamesrvAddr());
 
         consumer.subscribe("testTopic", "redGrabToDb||redMoneyToUser");

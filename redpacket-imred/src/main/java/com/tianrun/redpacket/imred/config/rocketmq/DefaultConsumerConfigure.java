@@ -24,19 +24,18 @@ public abstract class DefaultConsumerConfigure {
     @Autowired
     private ConsumerConfig consumerConfig;
 
-    DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("framework-rocketmq");
-
-
     /**
      * 开启消费者监听服务
      * @throws MQClientException
      */
     public void listener() throws MQClientException {
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(consumerConfig.getGroupName());
         log.info("开启消费者-------------------");
 
         consumer.setNamesrvAddr(consumerConfig.getNamesrvAddr());
 
         consumer.subscribe(RocketMqConstants.RED_TOPIC, "*");
+        consumer.subscribe("testTopic","*");
         // 开启内部类实现监听
         consumer.registerMessageListener((MessageListenerConcurrently) (msgs, context) -> DefaultConsumerConfigure.this.dealBody(msgs));
 

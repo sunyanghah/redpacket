@@ -82,7 +82,6 @@ public class IdGenerator {
         lastTimestamp = timestamp;
         // ID偏移组合生成最终的ID，并返回ID
         long nextId = ((timestamp - twepoch) << timestampLeftShift) | (processId << datacenterIdShift) | (workerId << workerIdShift) | sequence;
-        System.out.println(nextId);
         return nextId;
     }
 

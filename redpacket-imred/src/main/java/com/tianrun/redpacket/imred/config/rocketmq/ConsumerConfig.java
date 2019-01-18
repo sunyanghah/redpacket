@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "rocketmq.consume")
+@ConfigurationProperties(prefix = "rocketmq.consumer")
 @Configuration
 @ToString
 public class ConsumerConfig {
