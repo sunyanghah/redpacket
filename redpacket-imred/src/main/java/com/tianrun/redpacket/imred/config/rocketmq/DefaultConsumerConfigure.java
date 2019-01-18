@@ -35,7 +35,6 @@ public abstract class DefaultConsumerConfigure {
         consumer.setNamesrvAddr(consumerConfig.getNamesrvAddr());
 
         consumer.subscribe(RocketMqConstants.RED_TOPIC, "*");
-        consumer.subscribe("testTopic","*");
         // 开启内部类实现监听
         consumer.registerMessageListener((MessageListenerConcurrently) (msgs, context) -> DefaultConsumerConfigure.this.dealBody(msgs));
 

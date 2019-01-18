@@ -130,7 +130,4 @@ public class ConsumeService  {
         }
     }
 
-    public void showTest(String msgStr) {
-        log.info("this is server2 and "+msgStr);
-    }
 }
