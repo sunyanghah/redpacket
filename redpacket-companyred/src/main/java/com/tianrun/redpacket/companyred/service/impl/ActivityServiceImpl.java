@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tianrun.redpacket.common.constant.DictConstant;
+import com.tianrun.redpacket.common.constant.RedConstants;
 import com.tianrun.redpacket.common.dto.InBatchIdDto;
 import com.tianrun.redpacket.common.exception.BusinessException;
 import com.tianrun.redpacket.common.dict.DictHandle;
@@ -20,12 +21,11 @@ import com.tianrun.redpacket.companyred.service.AuthorizationService;
 import com.tianrun.redpacket.companyred.service.TaskRelService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -52,6 +52,9 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
 
     @Autowired
     private ActivityPlaceService activityPlaceService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 检查设置的红包金额是否合理
@@ -202,12 +205,51 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void activeActivity(InBatchIdDto<Long> inBatchIdDto) throws Exception {
         redActivityMapper.updateActivityStatus(inBatchIdDto.getIdList(),new Date(),DictConstant.ACTIVITY_STATUS_ACTIVE,"123");
+        List<RedActivity> activityList = redActivityMapper.selectBatchIds(inBatchIdDto.getIdList());
+        if (activityList != null && activityList.size() > 0){
+            for (RedActivity redActivity : activityList){
+                if (DictConstant.ACTIVITY_STATUS_UNACTIVE.equals(redActivity.getActivityStatus())){
+
+                }else if (DictConstant.ACTIVITY_STATUS_FREEZE.equals(redActivity.getActivityStatus())){
+
+                }
+            }
+        }
         // TODO 往redis添加红包信息 红包类型
     }
 
+    /**
+     * 红包基本信息入缓存
+     * @param redActivity
+     * @throws Exception
+     */
+    private void addHbInfoCache(RedActivity redActivity) throws Exception{
+        // 红包信息放入缓存
+        Map<String,String> hbMap = new HashMap<>();
+        // 红包个数
+        hbMap.put(RedConstants.HB_SIZE,String.valueOf(redActivity.getRedNum()));
+        // 红包总钱数
+        hbMap.put(RedConstants.HB_MONEY,String.valueOf(redActivity.getRedAmount()));
+        // 红包类型
+        hbMap.put(RedConstants.HB_TYPE,redActivity.getRedType());
+        // 单个红包钱数。普通类型的红包时设置
+        hbMap.put(RedConstants.HB_PRICE,null == redActivity.getRedPrice()?null:String.valueOf(redActivity.getRedPrice()));
+        // 红包过期时间
+        hbMap.put(RedConstants.HB_DEADLINE,String.valueOf(redActivity.getEndTime().getTime()));
+        hbMap.put(RedConstants.HB_MAX_PRICE,redActivity.getMaxPrice() == null ? "0":String.valueOf(redActivity.getMaxPrice()));
+        hbMap.put(RedConstants.HB_MIN_PRICE,"0");
+        hbMap.put(RedConstants.HB_STATUS,DictConstant.ACTIVITY_STATUS_ACTIVE);
+        redisTemplate.opsForHash().putAll(RedConstants.HB_INFO+redActivity.getRedNo(),hbMap);
+    }
+
+//    private void addAuth
+
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void freezeActivity(InBatchIdDto<Long> inBatchIdDto) throws Exception {
         redActivityMapper.updateActivityStatus(inBatchIdDto.getIdList(),new Date(),DictConstant.ACTIVITY_STATUS_FREEZE,"123");
         // TODO 修改redis红包信息

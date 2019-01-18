@@ -23,6 +23,9 @@ spring:
       # 指定连接数据库的超时时间
       login-timeout: 500
   redis:
+    lettuce:
+      pool:
+        max-active: -1
     password: ido85_123
     cluster.nodes: 39.96.46.94:6379,39.96.11.112:6379,39.105.65.204:6379,39.96.46.94:6380,39.96.11.112:6380,39.105.65.204:6380
     cluster.max-redirects: 6

@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -42,6 +43,7 @@ public class ConsumeService  {
      * @param unpackMessageDto
      * @throws Exception
      */
+    @Transactional(rollbackFor = Exception.class)
     public void unpackMessageHandle(UnpackMessageDto unpackMessageDto) throws Exception {
         addGrabNote(unpackMessageDto);
         if (unpackMessageDto.isLastOne()){
@@ -54,6 +56,7 @@ public class ConsumeService  {
      * @param redNo
      * @throws Exception
      */
+    @Transactional(rollbackFor = Exception.class)
     public void expireMessageHandle(String redNo) throws Exception {
 
         List<String> list = redisTemplate.opsForHash().multiGet(RedConstants.HB_INFO + redNo,
@@ -88,6 +91,8 @@ public class ConsumeService  {
 
 
                 //TODO 退回红包发送人的余额
+
+                //TODO 删除redis中的数据 hbInfo 和 hbUser
             }
         }
 

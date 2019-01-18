@@ -3,10 +3,7 @@ package com.tianrun.redpacket.companyred.web;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tianrun.redpacket.common.dto.InBatchIdDto;
 import com.tianrun.redpacket.common.platform.RP;
-import com.tianrun.redpacket.companyred.dto.InAddTaskDto;
-import com.tianrun.redpacket.companyred.dto.InQueryTaskDto;
-import com.tianrun.redpacket.companyred.dto.InUpdateTaskDto;
-import com.tianrun.redpacket.companyred.dto.OutGetTaskDto;
+import com.tianrun.redpacket.companyred.dto.*;
 import com.tianrun.redpacket.companyred.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -82,6 +79,12 @@ public class TaskController {
     public RP queryTask(@Valid @RequestBody InQueryTaskDto inQueryTaskDto) throws Exception{
         Page page = taskService.queryTask(inQueryTaskDto);
         return RP.buildSuccess(page);
+    }
+
+    @PutMapping("/status")
+    public RP changeStatus(@Valid @RequestBody InChangeTaskStatusDto inChangeTaskStatusDto) throws Exception{
+
+        return RP.buildSuccess("修改成功");
     }
 
 }

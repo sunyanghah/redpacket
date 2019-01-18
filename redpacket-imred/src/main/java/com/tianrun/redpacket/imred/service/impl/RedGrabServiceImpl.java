@@ -157,7 +157,7 @@ public class RedGrabServiceImpl implements RedGrabService{
            e.printStackTrace();
         }
         outGrabDto.setCanGrabFlag(false);
-        outGrabDto.setMsg("红包有问题");
+        outGrabDto.setMsg("红包已经过期了");
         return outGrabDto;
     }
 
@@ -210,7 +210,7 @@ public class RedGrabServiceImpl implements RedGrabService{
             e.printStackTrace();
         }
         outUnpackDto.setCanUnpackFlag(false);
-        outUnpackDto.setMsg("红包有问题");
+        outUnpackDto.setMsg("红包已经过期了");
         return outUnpackDto;
     }
 
