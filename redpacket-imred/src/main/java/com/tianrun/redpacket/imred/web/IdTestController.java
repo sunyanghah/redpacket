@@ -42,7 +42,7 @@ public class IdTestController {
     @GetMapping("/loopTest")
     public RP loopTest() throws Exception{
         Set set2 = new HashSet<>();
-        for (int i =0;i<1000;i++){
+        for (int i =0;i<2000;i++){
             set2.add(idGenerator.next());
         }
         return RP.buildSuccess(set2.size());
