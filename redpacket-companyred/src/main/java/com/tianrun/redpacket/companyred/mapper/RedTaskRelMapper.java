@@ -1,6 +1,7 @@
 package com.tianrun.redpacket.companyred.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.tianrun.redpacket.companyred.entity.RedActivity;
 import com.tianrun.redpacket.companyred.entity.RedTask;
 import com.tianrun.redpacket.companyred.entity.RedTaskRel;
 import org.apache.ibatis.annotations.Mapper;
@@ -53,4 +54,21 @@ public interface RedTaskRelMapper extends BaseMapper<RedTaskRel> {
             "AND\n" +
             "red_id = #{redId}\n")
     List<RedTask> getTaskInfoByRedId(@Param("redId") Long redId);
+
+    /**
+     * 根据任务id获取红包活动redNo
+     * @param taskId
+     * @return
+     */
+    @Select("SELECT\n" +
+            "ra.*\n" +
+            "FROM\n" +
+            "tb_red_activity ra\n" +
+            "INNER JOIN\n" +
+            "tb_red_task_rel rtr\n" +
+            "ON\n" +
+            "ra.id = rtr.red_id\n" +
+            "WHERE\n" +
+            "rtr.task_id = #{taskId}")
+    List<RedActivity> getActivityByTask(@Param("taskId")Long taskId);
 }

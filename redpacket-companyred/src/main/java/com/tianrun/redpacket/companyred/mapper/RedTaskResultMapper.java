@@ -39,4 +39,16 @@ public interface RedTaskResultMapper extends BaseMapper<RedTaskResult>{
             "</script>")
     List<String> getAccountByFinishAllTask(@Param("taskInfos")List<RedTask> taskInfos,
                                            @Param("taskNum")Integer taskNum);
+
+    /**
+     * 根据任务和用户id获取用户该任务的完成情况
+     * @param taskCode
+     * @param userAccount
+     * @return
+     */
+    @Select("select rtr.* from tb_red_task_result rtr inner join tb_red_task rt " +
+            "on rt.id = rtr.task_id where rt.task_code = #{taskCode} and " +
+            "rtr.user_account = #{userAccount} ")
+    RedTaskResult getStatusByTaskAndUser(@Param("taskCode")String taskCode,
+                                         @Param("userAccount")String userAccount);
 }

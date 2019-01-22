@@ -217,12 +217,15 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
 
             // 如果之前是冻结
             }else if (DictConstant.ACTIVITY_STATUS_FREEZE.equals(activity.getActivityStatus())){
-
+                changeHbStatus(activity.getRedNo(),DictConstant.ACTIVITY_STATUS_ACTIVE);
             }
         }
         // 修改活动状态
         redActivityMapper.updateActivityStatus(Arrays.asList(redId),new Date(),DictConstant.ACTIVITY_STATUS_ACTIVE,"123");
-        // TODO 往redis添加红包信息 红包类型
+    }
+
+    private void changeHbStatus(String redNo,String status) throws Exception{
+        redisTemplate.opsForHash().put(RedConstants.HB_INFO+redNo,RedConstants.HB_STATUS,status);
     }
 
     /**
@@ -270,20 +273,33 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
     private void addTaskCache(RedActivity redActivity) throws Exception {
         List<RedTask> redTaskList = taskRelService.getTaskInfoByRedId(redActivity.getId());
         if (redTaskList != null && redTaskList.size() > 0){
+            redisTemplate.opsForList().rightPush(RedConstants.HB_TASK+redActivity.getRedNo(),DictConstant.YES);
             List<String> accountList = taskResultService.getAccountByFinishAllTask(redTaskList,redTaskList.size());
             if (accountList != null && accountList.size() > 0){
                 accountList.forEach(account ->
-                        redisTemplate.opsForList().leftPush(RedConstants.HB_TASK+redActivity.getRedNo(),account));
+                        redisTemplate.opsForList().rightPush(RedConstants.HB_TASK+redActivity.getRedNo(),account));
             }
+
+        }else{
+            redisTemplate.opsForList().rightPush(RedConstants.HB_TASK+redActivity.getRedNo(),DictConstant.NO);
         }
     }
 
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void freezeActivity(InBatchIdDto<Long> inBatchIdDto) throws Exception {
-        redActivityMapper.updateActivityStatus(inBatchIdDto.getIdList(),new Date(),DictConstant.ACTIVITY_STATUS_FREEZE,"123");
-        // TODO 修改redis红包信息
+    public void freezeActivity(Long redId) throws Exception {
+        // 获取活动集合
+        RedActivity activity = redActivityMapper.selectById(redId);
+        if (activity != null){
+            // 如果之前是已激活
+            if (DictConstant.ACTIVITY_STATUS_ACTIVE.equals(activity.getActivityStatus())){
+                changeHbStatus(activity.getRedNo(),DictConstant.ACTIVITY_STATUS_FREEZE);
+                //修改活动状态
+                redActivityMapper.updateActivityStatus(Arrays.asList(redId),new Date(),DictConstant.ACTIVITY_STATUS_FREEZE,"123");
+            }
+        }
+
     }
 
     private void addAuth(InAddActivityDto inAddActivityDto,Long redActivityId) throws Exception{

@@ -84,6 +84,7 @@ public class TaskController {
     @PutMapping("/status")
     public RP changeStatus(@Valid @RequestBody InChangeTaskStatusDto inChangeTaskStatusDto) throws Exception{
         // TODO 修改员工是否完成时，如果完成任务，则把此人加入到缓存中
+        taskService.changeStatus(inChangeTaskStatusDto);
         return RP.buildSuccess("修改成功");
     }
 

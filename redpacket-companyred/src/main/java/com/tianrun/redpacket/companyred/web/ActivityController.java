@@ -99,13 +99,13 @@ public class ActivityController {
 
     /**
      * 冻结红包活动
-     * @param inBatchIdDto
+     * @param redId
      * @return
      * @throws Exception
      */
-    @PutMapping("/freeze")
-    public RP freezeActivity(@RequestBody @Valid InBatchIdDto<Long> inBatchIdDto) throws Exception {
-        activityService.freezeActivity(inBatchIdDto);
+    @PutMapping("/freeze/{redId}")
+    public RP freezeActivity(@PathVariable("redId")Long redId) throws Exception {
+        activityService.freezeActivity(redId);
         return RP.buildSuccess("冻结成功");
     }
 

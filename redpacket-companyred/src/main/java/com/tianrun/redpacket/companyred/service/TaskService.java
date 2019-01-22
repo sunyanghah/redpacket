@@ -3,11 +3,10 @@ package com.tianrun.redpacket.companyred.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.tianrun.redpacket.common.dto.InBatchIdDto;
-import com.tianrun.redpacket.companyred.dto.InAddTaskDto;
-import com.tianrun.redpacket.companyred.dto.InQueryTaskDto;
-import com.tianrun.redpacket.companyred.dto.InUpdateTaskDto;
-import com.tianrun.redpacket.companyred.dto.OutGetTaskDto;
+import com.tianrun.redpacket.companyred.dto.*;
 import com.tianrun.redpacket.companyred.entity.RedTask;
+
+import javax.validation.Valid;
 
 /**
  * Created by dell on 2019/1/7.
@@ -51,4 +50,11 @@ public interface TaskService extends IService<RedTask> {
      * @throws Exception
      */
     void deleteTask(InBatchIdDto<Long> inBatchIdDto) throws Exception;
+
+    /**
+     * 修改任务完成状态
+     * @param inChangeTaskStatusDto
+     * @throws Exception
+     */
+    void changeStatus(InChangeTaskStatusDto inChangeTaskStatusDto) throws Exception;
 }
