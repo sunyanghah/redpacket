@@ -29,4 +29,17 @@ public interface RedGrabMapper extends BaseMapper<RedGrab> {
             "LIMIT 0,1")
     RedGrab getBestLuckRedGrab(@Param("redNo") String redNo);
 
+    /**
+     * 获取红包已抢的钱数
+     * @param redNo
+     * @return
+     */
+    @Select("SELECT\n" +
+            "SUM(money)\n" +
+            "FROM\n" +
+            "tb_red_grab\n" +
+            "WHERE\n" +
+            "red_no = #{redNo}\n")
+    Integer getGrabMoneyByRedNo(@Param("redNo") String redNo);
+
 }

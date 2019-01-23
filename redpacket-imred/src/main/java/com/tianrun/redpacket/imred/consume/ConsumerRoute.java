@@ -58,6 +58,9 @@ public class ConsumerRoute extends DefaultConsumerConfigure implements Applicati
                 if (RocketMqConstants.RED_TOPIC.equals(topic) && RocketMqConstants.TAGS_EXPIRE.equals(tags)){
                     consumeService.expireMessageHandle(msgStr);
                 }
+                if (RocketMqConstants.RED_TOPIC.equals(topic) && RocketMqConstants.TAGS_EXPIRE_DB.equals(tags)){
+                    consumeService.handleExpireByRedisDown(msgStr);
+                }
 
             } catch (Exception e) {
                 log.error("消息处理失败");

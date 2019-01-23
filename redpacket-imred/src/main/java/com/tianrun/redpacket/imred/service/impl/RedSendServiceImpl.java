@@ -6,6 +6,7 @@ import com.tianrun.redpacket.common.constant.RedConstants;
 import com.tianrun.redpacket.common.constant.RocketMqConstants;
 import com.tianrun.redpacket.common.exception.BusinessException;
 import com.tianrun.redpacket.common.platform.IdGenerator;
+import com.tianrun.redpacket.common.util.RedUtil;
 import com.tianrun.redpacket.imred.dto.InRedPackDto;
 import com.tianrun.redpacket.imred.dto.InRedPayFallbackDto;
 import com.tianrun.redpacket.imred.dto.OutRedPackDto;
@@ -24,9 +25,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by dell on 2018/12/22.
@@ -91,6 +90,7 @@ public class RedSendServiceImpl implements RedSendService {
         redOrder.setRedNo(redOrderNo);
         redOrder.setDistributeTime(new Date());
         redOrder.setStatus("1");
+        // TODO 如果发送对服务器压力也很大，则这里放入缓存，不存库。支付回调里入库并删掉缓存里的数据。
         redOrderMapper.insert(redOrder);
         outRedPackDto.setWaitFor("备用字段");
 
@@ -129,20 +129,24 @@ public class RedSendServiceImpl implements RedSendService {
             redImDistribute.setDeadlineTime(deadLineDate);
             redImDistributeMapper.insert(redImDistribute);
 
+            //预生成红包金额
+            List<String> moneyList = new ArrayList<>();
+            if (DictConstant.RED_TYPE_LUCK.equals(redOrder.getRedType())){
+                moneyList = RedUtil.getRandomRed(redOrder.getRedNum(),redOrder.getRedMoney(),null,null,String.class);
+            }else if (DictConstant.RED_TYPE_NORMAL.equals(redOrder.getRedType())){
+                for (int i=0;i<redOrder.getRedNum();i++){
+                    moneyList.add(String.valueOf(redOrder.getRedPrice()));
+                }
+            }
+
+            //红包金额放入缓存
+            redisTemplate.opsForList().leftPushAll(RedConstants.HB_MONEY_LIST+redOrder.getRedNo(),moneyList);
             // 红包信息放入缓存
             Map<String,String> hbMap = new HashMap<>();
             // 红包个数
             hbMap.put(RedConstants.HB_SIZE,String.valueOf(redOrder.getRedNum()));
-            // 红包总钱数
-            hbMap.put(RedConstants.HB_MONEY,String.valueOf(redOrder.getRedMoney()));
-            // 红包类型
-            hbMap.put(RedConstants.HB_TYPE,redOrder.getRedType());
-            // 单个红包钱数。普通类型的红包时设置
-            hbMap.put(RedConstants.HB_PRICE,null == redOrder.getRedPrice()?null:String.valueOf(redOrder.getRedPrice()));
             // 红包过期时间
             hbMap.put(RedConstants.HB_DEADLINE,String.valueOf(System.currentTimeMillis()+RedConstants.HB_DEADLINE_MILLISECOND));
-            hbMap.put(RedConstants.HB_MAX_PRICE,"0");
-            hbMap.put(RedConstants.HB_MIN_PRICE,"0");
             redisTemplate.opsForHash().putAll(RedConstants.HB_INFO+redOrder.getRedNo(),hbMap);
 
             // TODO 发送延时队列 红包过期后 退还给发红包者

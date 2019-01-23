@@ -266,7 +266,7 @@ public class GrabServiceImpl implements GrabService {
                     Object object = redisTemplate.execute(redLuckScript,
                             Arrays.asList(RedConstants.HB_INFO + redNo, RedConstants.HB_SIZE,
                                     RedConstants.HB_MONEY, RedConstants.HB_MAX_PRICE, RedConstants.HB_MIN_PRICE,
-                                    String.valueOf(System.currentTimeMillis()), RedConstants.HB_INFO_USER + redNo, userAccount));
+                                    String.valueOf(System.currentTimeMillis()), RedConstants.HB_USER + redNo, userAccount));
                     return handleUnpackResult(outUnpackDto,object,userAccount,redNo,lastOne);
                     // 普通平分红包
                 } else if (DictConstant.RED_TYPE_NORMAL.equals(type)) {
@@ -274,7 +274,7 @@ public class GrabServiceImpl implements GrabService {
                     Object object = redisTemplate.execute(redNormalScript,
                             Arrays.asList(RedConstants.HB_INFO + redNo, RedConstants.HB_SIZE,
                                     RedConstants.HB_MONEY, RedConstants.HB_PRICE,
-                                    RedConstants.HB_INFO_USER + redNo, userAccount));
+                                    RedConstants.HB_USER + redNo, userAccount));
                     return handleUnpackResult(outUnpackDto,object,userAccount,redNo,false);
                 }
             }

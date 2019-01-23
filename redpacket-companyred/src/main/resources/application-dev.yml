@@ -6,7 +6,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://39.105.65.204:3306/redpacket?useSSL=false&&characterEncoding=utf-8&&serverTimezone=Hongkong
+    url: jdbc:mysql://39.105.65.204:3306/redpacket_planb?useSSL=false&&characterEncoding=utf-8&&serverTimezone=Hongkong
     username: root
     password: 1qa@WS
     hikari:

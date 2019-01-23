@@ -6,7 +6,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://39.105.65.204:3306/redpacket?useSSL=false&&characterEncoding=utf-8&&serverTimezone=Hongkong
+    url: jdbc:mysql://39.105.65.204:3306/redpacket_planb?useSSL=false&&characterEncoding=utf-8&&serverTimezone=Hongkong
     username: root
     password: 1qa@WS
     hikari:
@@ -25,16 +25,9 @@ spring:
   redis:
     password: ido85_123
     cluster.nodes: 39.96.46.94:6379,39.96.11.112:6379,39.105.65.204:6379,39.96.46.94:6380,39.96.11.112:6380,39.105.65.204:6380
-    cluster.max-redirects: 6
-    queue.timeout: 30
-#  redis:
-#    host: 47.94.159.51
-#    port: 6379
-#    password: 1qaz@wsx?Z
-#    database: 2
-#    queue.timeout: 30
-#    pool.test-on-borrow: true
-#    pool.test-while-idle: true
+    cluster.max-redirects: 3
+    queue.timeout: 3000
+
 
 rocketmq:
   # 生产者配置

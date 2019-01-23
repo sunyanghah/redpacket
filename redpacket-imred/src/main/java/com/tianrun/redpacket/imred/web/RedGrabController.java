@@ -34,7 +34,7 @@ public class RedGrabController {
     }
 
     @GetMapping("/grab/test")
-    public RP testGrab(@RequestParam("redId")String redNo) throws Exception{
+    public RP testGrab(@RequestParam("redNo")String redNo) throws Exception{
         String userAccount = RandomStringUtils.randomAlphanumeric(5);
         return RP.buildSuccess(redGrabService.grab(redNo,userAccount));
     }
