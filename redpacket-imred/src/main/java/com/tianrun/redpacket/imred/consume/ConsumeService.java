@@ -54,7 +54,12 @@ public class ConsumeService  {
     public void unpackMessageHandle(UnpackMessageDto unpackMessageDto) throws Exception {
         addGrabNote(unpackMessageDto);
         if (unpackMessageDto.isLastOne()){
-            setBestLuck(unpackMessageDto.getRedNo());
+            RedImDistribute redImDistribute = new RedImDistribute();
+            redImDistribute.setRedNo(unpackMessageDto.getRedNo());
+            redImDistribute = redImDistributeMapper.selectOne(new QueryWrapper<>(redImDistribute));
+            if (redImDistribute != null && DictConstant.RED_TYPE_LUCK.equals(redImDistribute.getRedType())) {
+                setBestLuck(unpackMessageDto.getRedNo());
+            }
         }
     }
 
@@ -68,7 +73,6 @@ public class ConsumeService  {
         try {
             List<String> list = redisTemplate.opsForHash().multiGet(RedConstants.HB_INFO + redNo,
                     Arrays.asList(RedConstants.HB_SIZE));
-            System.out.println(1/0);
             if (null != list && list.size() > 0 && !list.contains(null)) {
                 int size = Integer.parseInt(list.get(0));
                 if (size > 0) {

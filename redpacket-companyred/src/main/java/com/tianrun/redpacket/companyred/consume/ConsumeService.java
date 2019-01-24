@@ -1,9 +1,12 @@
 package com.tianrun.redpacket.companyred.consume;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tianrun.redpacket.common.constant.DictConstant;
 import com.tianrun.redpacket.common.platform.IdGenerator;
 import com.tianrun.redpacket.companyred.dto.UnpackMessageDto;
+import com.tianrun.redpacket.companyred.entity.RedActivity;
 import com.tianrun.redpacket.companyred.entity.RedGrab;
+import com.tianrun.redpacket.companyred.mapper.RedActivityMapper;
 import com.tianrun.redpacket.companyred.mapper.RedGrabMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,8 @@ public class ConsumeService {
     private IdGenerator idGenerator;
     @Autowired
     private RedGrabMapper redGrabMapper;
+    @Autowired
+    private RedActivityMapper redActivityMapper;
 
     /**
      * 拆红包消息消费
@@ -32,7 +37,12 @@ public class ConsumeService {
     public void unpackMessageHandle(UnpackMessageDto unpackMessageDto) throws Exception {
         addGrabNote(unpackMessageDto);
         if (unpackMessageDto.isLastOne()){
-            setBestLuck(unpackMessageDto.getRedNo());
+            RedActivity redActivity = new RedActivity();
+            redActivity.setRedNo(unpackMessageDto.getRedNo());
+            redActivity = redActivityMapper.selectOne(new QueryWrapper<>(redActivity));
+            if (redActivity != null && DictConstant.RED_TYPE_LUCK.equals(redActivity.getRedType())) {
+                setBestLuck(unpackMessageDto.getRedNo());
+            }
         }
     }
 

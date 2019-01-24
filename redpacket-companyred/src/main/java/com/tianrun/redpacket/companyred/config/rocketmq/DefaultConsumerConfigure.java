@@ -1,5 +1,6 @@
 package com.tianrun.redpacket.companyred.config.rocketmq;
 
+import com.tianrun.redpacket.common.constant.RocketMqConstants;
 import lombok.extern.log4j.Log4j2;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
@@ -33,15 +34,9 @@ public abstract class DefaultConsumerConfigure {
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(consumerConfig.getGroupName());
         consumer.setNamesrvAddr(consumerConfig.getNamesrvAddr());
 
-        consumer.subscribe("testTopic", "redGrabToDb||redMoneyToUser");
-        consumer.subscribe("myTopic","testTag");
+        consumer.subscribe(RocketMqConstants.ACTIVITY_TOPIC, "*");
         // 开启内部类实现监听
-        consumer.registerMessageListener(new MessageListenerConcurrently() {
-            @Override
-            public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
-                return DefaultConsumerConfigure.this.dealBody(msgs);
-            }
-        });
+        consumer.registerMessageListener((MessageListenerConcurrently) (msgs, context) -> DefaultConsumerConfigure.this.dealBody(msgs));
 
         consumer.start();
 

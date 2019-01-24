@@ -10,6 +10,7 @@ import com.tianrun.redpacket.common.dto.InBatchIdDto;
 import com.tianrun.redpacket.common.exception.BusinessException;
 import com.tianrun.redpacket.common.dict.DictHandle;
 import com.tianrun.redpacket.common.platform.IdGenerator;
+import com.tianrun.redpacket.common.util.RedUtil;
 import com.tianrun.redpacket.companyred.dto.*;
 import com.tianrun.redpacket.companyred.entity.*;
 import com.tianrun.redpacket.companyred.mapper.RedActivityMapper;
@@ -202,6 +203,11 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
         addPlace(inAddActivityDto.getPlaceList(),redActivityId);
     }
 
+    /**
+     * 激活红包活动
+     * @param redId
+     * @throws Exception
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void activeActivity(Long redId) throws Exception {
@@ -210,7 +216,7 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
         if (activity != null){
             // 如果之前是未激活
             if (DictConstant.ACTIVITY_STATUS_UNACTIVE.equals(activity.getActivityStatus())){
-
+                addHbMoneyCache(activity);
                 addHbInfoCache(activity);
                 addAuthCache(activity);
                 addTaskCache(activity);
@@ -229,6 +235,28 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
     }
 
     /**
+     * 红包金额预生成
+     * @param activity
+     * @throws Exception
+     */
+    private void addHbMoneyCache(RedActivity activity) throws Exception {
+        if (activity != null) {
+            List<String> moneyList = new ArrayList<>();
+            if (DictConstant.RED_TYPE_LUCK.equals(activity.getRedType())){
+                moneyList = RedUtil.getRandomRed(activity.getRedNum(), activity.getRedAmount(), null,
+                        activity.getMaxPrice(), String.class);
+            }else if (DictConstant.RED_TYPE_NORMAL.equals(activity.getRedType())){
+                for (int i=0;i<activity.getRedNum();i++){
+                    moneyList.add(String.valueOf(activity.getRedPrice()));
+                }
+            }
+            if (moneyList != null && moneyList.size() > 0){
+                redisTemplate.opsForList().leftPushAll(RedConstants.HB_MONEY_LIST+activity.getRedNo(),moneyList);
+            }
+        }
+    }
+
+    /**
      * 红包基本信息入缓存
      * @param redActivity
      * @throws Exception
@@ -238,16 +266,9 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
         Map<String,String> hbMap = new HashMap<>();
         // 红包个数
         hbMap.put(RedConstants.HB_SIZE,String.valueOf(redActivity.getRedNum()));
-        // 红包总钱数
-        hbMap.put(RedConstants.HB_MONEY,String.valueOf(redActivity.getRedAmount()));
-        // 红包类型
-        hbMap.put(RedConstants.HB_TYPE,redActivity.getRedType());
-        // 单个红包钱数。普通类型的红包时设置
-        hbMap.put(RedConstants.HB_PRICE,null == redActivity.getRedPrice()?null:String.valueOf(redActivity.getRedPrice()));
         // 红包过期时间
         hbMap.put(RedConstants.HB_DEADLINE,String.valueOf(redActivity.getEndTime().getTime()));
-        hbMap.put(RedConstants.HB_MAX_PRICE,redActivity.getMaxPrice() == null ? "0":String.valueOf(redActivity.getMaxPrice()));
-        hbMap.put(RedConstants.HB_MIN_PRICE,"0");
+        // 红包状态
         hbMap.put(RedConstants.HB_STATUS,DictConstant.ACTIVITY_STATUS_ACTIVE);
         redisTemplate.opsForHash().putAll(RedConstants.HB_INFO+redActivity.getRedNo(),hbMap);
     }
@@ -286,6 +307,11 @@ public class ActivityServiceImpl extends ServiceImpl<RedActivityMapper,RedActivi
     }
 
 
+    /**
+     * 冻结红包活动
+     * @param redId
+     * @throws Exception
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void freezeActivity(Long redId) throws Exception {
