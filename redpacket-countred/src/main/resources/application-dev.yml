@@ -39,6 +39,16 @@ rocketmq:
     groupName: ${spring.application.name}
     namesrvAddr: 39.96.46.94:9876;39.105.65.204:9876;39.96.11.112:9876
 
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://47.94.159.51:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    ip-address: localhost
+
+
 mybatis-plus:
   mapper-locations: classpath:/mapper/*Mapper.xml
   typeAliasesPackage: com.tianrun.redpacket.countred.dto,com.tianrun.redpacket.countred.entity

@@ -51,11 +51,4 @@ public class RedSendController {
         return RP.buildSuccess("success");
         // TODO 修改支付状态，发放红包，设置redis红包信息
     }
-
-    @GetMapping("/redisTest")
-    public RP redisTest() throws Exception{
-        redisTemplate.opsForValue().set("sytest","dsfsdfsdfsdf");
-        Object obj = redisTemplate.opsForValue().get("sytest");
-        return RP.buildSuccess(obj);
-    }
 }

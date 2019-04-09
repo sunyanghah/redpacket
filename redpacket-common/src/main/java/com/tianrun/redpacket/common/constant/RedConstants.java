@@ -52,4 +52,19 @@ public class RedConstants {
      */
     public static long HB_DEADLINE_MILLISECOND = 1000*60*60*24;
 
+    /**
+     * 单聊红包金额上限
+     */
+    public static String CONFIG_PERSONAL_MAX = "personal_max";
+
+    /**
+     * 群聊红包金额上限
+     */
+    public static String CONFIG_GROUP_MAX = "group_max";
+
+    /**
+     * 红包过期时间
+     */
+    public static String CONFIG_DEADLINE_TIME = "deadline_time";
+
 }

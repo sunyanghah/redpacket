@@ -1,5 +1,6 @@
 package com.tianrun.redpacket.imred.consume;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tianrun.redpacket.common.constant.DictConstant;
 import com.tianrun.redpacket.common.constant.RedConstants;
@@ -123,7 +124,7 @@ public class ConsumeService  {
             map.put("topic", RocketMqConstants.RED_TOPIC);
             map.put("tags", RocketMqConstants.TAGS_EXPIRE);
             map.put("data", redNo);
-            redisTemplate.opsForList().leftPush(RocketMqConstants.ERROR_SEND, map);
+            redisTemplate.opsForList().leftPush(RocketMqConstants.ERROR_SEND, JSON.toJSONString(map));
             log.error("红包过期转交数据库处理发送失败 红包编号 {},异常信息{}", redNo,e);
         }
     }
