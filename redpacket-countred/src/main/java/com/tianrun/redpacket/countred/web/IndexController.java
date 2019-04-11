@@ -26,9 +26,7 @@ public class IndexController {
 
         OutIndexDto outIndexDto = new OutIndexDto();
         Calendar nowCalendar = Calendar.getInstance();
-        nowCalendar.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2019-01-26 16:09:22"));
-
-
+//        nowCalendar.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2019-01-26 16:09:22"));
         Date nowDate = nowCalendar.getTime();
         outIndexDto.setImSend(indexService.getImSendByDayCount(nowDate));
         outIndexDto.setImMoney(indexService.getImMoneyByDayCount(nowDate));
