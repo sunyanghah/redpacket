@@ -46,7 +46,7 @@ public interface RedConfigMapper extends BaseMapper<RedConfig>{
             " update " +
             " tb_red_config " +
             " set config_value = #{dto.configValue} " +
-            " , update_user = #{dto.update_user} " +
+            " , update_user = #{dto.updateUser} " +
             " , update_time = #{updateTime} " +
             " where " +
             " config_code = #{dto.configCode}" +
