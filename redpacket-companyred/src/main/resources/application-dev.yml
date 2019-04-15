@@ -58,6 +58,15 @@ mybatis-plus:
     cache-enabled: true
 
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://47.94.159.51:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    ip-address: localhost
+
+
 
 logging:
   level:

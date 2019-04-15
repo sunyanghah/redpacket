@@ -24,7 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static void main(String[] args){
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        String str = bCryptPasswordEncoder.encode("1234");
+        String str = bCryptPasswordEncoder.encode("red_gateway");
         System.out.println(str);
     }
 

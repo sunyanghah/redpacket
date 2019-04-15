@@ -23,7 +23,8 @@ public class AuthorizationConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/auth/**","/config/refresh").permitAll()
+        http.authorizeRequests().antMatchers("/auth/**","/config/refresh","/validCode/*","/companyred/red/company/grab",
+                "/companyred/red/company/unpack","/companyred/red/company/task/status").permitAll()
                 .anyRequest().authenticated()
                 .anyRequest().access("@permissionService.hasPermission(request,authentication)");
     }

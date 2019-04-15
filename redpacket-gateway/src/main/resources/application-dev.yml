@@ -92,7 +92,7 @@ ribbon.ConnectTimeout: 2000
 security:
   oauth2:
     client:
-      clientId: client_gateway
-      clientSecret: client_gateway
+      clientId: red_gateway
+      clientSecret: red_gateway
     resource:
       token-info-uri: http://localhost:8004/oauth/check_token
