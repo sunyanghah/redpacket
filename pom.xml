@@ -13,6 +13,8 @@
         <module>redpacket-companyred</module>
         <module>redpacket-countred</module>
         <module>redpacket-common</module>
+        <module>redpacket-gateway</module>
+        <module>redpacket-auth</module>
     </modules>
 
 

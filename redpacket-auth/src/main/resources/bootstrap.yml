@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: redpacket-auth
+  profiles:
+    active: dev

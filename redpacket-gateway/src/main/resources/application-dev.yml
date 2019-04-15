@@ -1,7 +1,5 @@
 server:
-  port: 8003
-  servlet:
-    context-path: /red/count
+  port: 8000
 
 spring:
   datasource:
@@ -21,12 +19,13 @@ spring:
       # 设定连接校验的超时时间
       validation-timeout: 5000
       # 指定连接数据库的超时时间
-      login-timeout: 5
+      login-timeout: 500
   redis:
     password: ido85_123
-    cluster.nodes: 39.96.46.94:6379,39.96.46.94:6380,39.96.11.112:6379,39.105.65.204:6379,39.96.11.112:6380,39.105.65.204:6380
+    cluster.nodes: 39.96.46.94:6379,39.96.11.112:6379,39.105.65.204:6379,39.96.46.94:6380,39.96.11.112:6380,39.105.65.204:6380
     cluster.max-redirects: 3
-    queue.timeout: 30
+    queue.timeout: 3000
+
 
 rocketmq:
   # 生产者配置
@@ -51,7 +50,7 @@ eureka:
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/*Mapper.xml
-  typeAliasesPackage: com.tianrun.redpacket.countred.dto,com.tianrun.redpacket.countred.entity
+  typeAliasesPackage: com.tianrun.redpacket.gateway.dto,com.tianrun.redpacket.redpacket.entity
   global-config:
     #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
     id-type: 0
@@ -66,6 +65,8 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: true
+
+
 
 # 开启clientFallback降级
 feign:
@@ -88,4 +89,10 @@ ribbon.ReadTimeout: 10000
 #请求连接的超时时间
 ribbon.ConnectTimeout: 2000
 
-
+security:
+  oauth2:
+    client:
+      clientId: client_gateway
+      clientSecret: client_gateway
+    resource:
+      token-info-uri: http://localhost:8004/oauth/check_token
